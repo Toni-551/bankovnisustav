@@ -5,15 +5,20 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-import { Outlet } from 'react-router-dom';
 
 import 'bootstrap/dist/css/bootstrap.css';
+import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
+import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
+import 'react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css';
 
-import Klijent from './routes/Klijenti';
+import Klijenti from './routes/Klijenti';
 import Login from './routes/Login';
 import Administracija from './routes/Administracija';
 import Transakcija from './routes/Transakcija';
 import Zaposlenici from './routes/Zaposlenici';
+import Klijent from './routes/Klijent';
+import NoviKlijent from './routes/NovaOsoba';
+import Zaposlenik from './routes/Zaposlenik';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -22,9 +27,12 @@ root.render(
       <Route path="/" element={<App/>}>
         <Route path="login" element={<Login />} />
         <Route path="administracija/" element={<Administracija/>}>
-          <Route path="klijenti" element={<Klijent />} />
+          <Route path="klijenti" element={<Klijenti />} />
+          <Route path="novaOsoba/:IdOsoba" element={<NoviKlijent />} />
+          <Route path="klijent/:KlijentID" element={<Klijent />} />
+          <Route path="zaposlenik/:ZaposlenikID" element={<Zaposlenik />} />
           <Route path="transakcije" element={<Transakcija/>} />
-          <Route path="Zaposlenici" element={<Zaposlenici/>} />
+          <Route path="zaposlenici" element={<Zaposlenici/>} />
         </Route>
       </Route>
     </Routes>

@@ -1,17 +1,39 @@
 import {useState} from 'react';
 import { useNavigate} from 'react-router-dom';
+import axios from 'axios';
 
 function Login(){
     const [username, setUsername]= useState();
     const [password, setPassword]= useState();
 
-    
     const navigate = useNavigate();
 
     const handleSubmit = (event) => {
         event.preventDefault();
         console.log(`Model autombila je: ${username} , asfs ${password}`);
-        navigate('/administracija/klijenti');
+        
+
+        axios({
+            method: 'post',
+            url: 'http://localhost/KV/bankovnisustav/src/PHP/ReadWrite.php',
+            data: {
+                RequestId: 'Ucitaj_podatke_Login',
+                username: username ,//|| "",
+                password: password //|| ""
+            },
+            headers: { 
+                "Content-Type": "multipart/form-data",
+            } ,
+             }).then(function (response) {
+            //handle success
+            console.log(response.data);
+            if(response.data){
+                navigate('/administracija/klijenti');
+            }
+             }).catch(function (response) {
+            //handle error
+            console.log(response);
+          });
         }
 
         

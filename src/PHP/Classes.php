@@ -32,7 +32,9 @@ class Klijent extends Osoba{
     }
 }
 class Zaposlenik extends Osoba{
-
+    function __construct($oib, $ime, $prezime, $adresa, $telefon, $spol) {
+        parent::__construct($oib, $ime, $prezime, $adresa, $telefon, $spol);
+    }
 }
 
 
