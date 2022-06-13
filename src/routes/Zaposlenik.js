@@ -36,7 +36,7 @@ function Zaposlenik(){
             url: 'http://localhost/KV/bankovnisustav/src/PHP/ReadWrite.php',
             data: {
                 RequestId: 'Obrisi_zaposlenika',
-                OIB: data.OIB
+                Sifra: data.Sifra
             },
             headers: { 
                 "Content-Type": "multipart/form-data",
@@ -57,9 +57,9 @@ function Zaposlenik(){
         <div className="container text-center mt-5">
             <h1 className="display-4">{data.Ime +" "+ data.Prezime}</h1>
             <p className="lead">{data.OIB}</p>
+            <p className="lead">{data.Sifra}</p>
             <hr></hr>
-            <button className="btn btn-danger m-3" onClick={handleClickDelete}>Obriši Klijenta</button>
-            <button className="btn btn-success m-3">Novi Račun</button>
+            <button className="btn btn-danger m-3" onClick={handleClickDelete}>Obriši zaposlenika</button>
             <button className="btn btn-success m-3">Registracija za online bankarstvo</button>
         </div>
     );

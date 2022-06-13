@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 
 import 'bootstrap/dist/css/bootstrap.css';
@@ -14,7 +14,7 @@ import 'react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css
 import Klijenti from './routes/Klijenti';
 import Login from './routes/Login';
 import Administracija from './routes/Administracija';
-import Transakcija from './routes/Transakcija';
+import Racuni from './routes/Racuni';
 import Zaposlenici from './routes/Zaposlenici';
 import Klijent from './routes/Klijent';
 import NoviKlijent from './routes/NovaOsoba';
@@ -26,12 +26,13 @@ root.render(
     <Routes>
       <Route path="/" element={<App/>}>
         <Route path="login" element={<Login />} />
+        <Route path="" element={<Navigate to="/login" />} />
         <Route path="administracija/" element={<Administracija/>}>
           <Route path="klijenti" element={<Klijenti />} />
           <Route path="novaOsoba/:IdOsoba" element={<NoviKlijent />} />
           <Route path="klijent/:KlijentID" element={<Klijent />} />
           <Route path="zaposlenik/:ZaposlenikID" element={<Zaposlenik />} />
-          <Route path="transakcije" element={<Transakcija/>} />
+          <Route path="racuni" element={<Racuni/>} />
           <Route path="zaposlenici" element={<Zaposlenici/>} />
         </Route>
       </Route>

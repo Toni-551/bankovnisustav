@@ -14,6 +14,7 @@ function Zaposlenici(){
     const navigate= useNavigate();
 
     const header = [
+        { text: 'Šifra', dataField: 'Sifra', sort: true },
         { text: 'OIB', dataField: 'OIB', sort: true },
         { text: 'Ime', dataField: 'Ime', sort: true },
         { text: 'Prezime', dataField: 'Prezime', sort: true },
@@ -45,8 +46,8 @@ function Zaposlenici(){
 
         const rowEvents = {
             onClick: (e, row, rowIndex) => {
-                console.log(row.OIB);
-                navigate("/administracija/zaposlenik/"+row.OIB);
+                console.log(row.Sifra);
+                navigate("/administracija/zaposlenik/"+row.Sifra);
             }
           };
 

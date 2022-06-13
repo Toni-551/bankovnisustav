@@ -10,9 +10,6 @@ function Login(){
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        console.log(`Model autombila je: ${username} , asfs ${password}`);
-        
-
         axios({
             method: 'post',
             url: 'http://localhost/KV/bankovnisustav/src/PHP/ReadWrite.php',

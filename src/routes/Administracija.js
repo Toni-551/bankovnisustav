@@ -4,10 +4,21 @@ import { Link, Outlet } from "react-router-dom";
 function Administracija(){
     return(
         <>
-        <nav className='navbar navbar-expand-lg bg-primary '>
-            <Link className='btn text-white' to="klijenti">Klijenti</Link>
-            <Link className='btn text-white' to="transakcije">transakcije</Link>
-            <Link className='btn text-white' to="zaposlenici">zaposlenici</Link>
+        <nav className='navbar navbar-expand-md justify-content-between bg-primary'>
+            <ul className="navbar-nav">
+                <li className="nav-item">
+                    <Link className='btn text-white' to="klijenti">Klijenti</Link>
+                </li>
+                <li className="nav-item">
+                    <Link className='btn text-white' to="racuni">Racuni</Link>
+                </li>
+                <li className="nav-item">
+                    <Link className='btn text-white' to="zaposlenici">Zaposlenici</Link>
+                </li>
+            </ul>
+            <div className="navbar-nav ml-auto">
+                <Link className='btn text-white' to="/Login">Odjava</Link>       
+            </div>    
         </nav>
         <Outlet />
         </>

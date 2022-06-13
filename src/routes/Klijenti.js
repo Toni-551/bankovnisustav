@@ -14,6 +14,7 @@ function Klijenti(){
     const navigate= useNavigate();
 
     const header = [
+        { text: 'Šifra', dataField: 'Sifra', sort: true },
         { text: 'OIB', dataField: 'OIB', sort: true },
         { text: 'Ime', dataField: 'Ime', sort: true },
         { text: 'Prezime', dataField: 'Prezime', sort: true },
@@ -36,6 +37,7 @@ function Klijenti(){
         }).then(function (response) {
             //handle success
             console.log(response.data);
+            console.log(response);
             setData(response.data);
           }).catch(function (response) {
             //handle error
@@ -45,8 +47,8 @@ function Klijenti(){
 
         const rowEvents = {
             onClick: (e, row, rowIndex) => {
-                console.log(row.OIB);
-                navigate("/administracija/klijent/"+row.OIB);
+                console.log(row.Sifra);
+                navigate("/administracija/klijent/"+row.Sifra);
             }
           };
 
@@ -54,7 +56,6 @@ function Klijenti(){
         return(
             <>
             <div className="container mt-5">
-                
                 <ToolkitProvider
                     keyField="id"
                     data={ data }
