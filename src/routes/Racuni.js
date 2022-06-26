@@ -36,13 +36,18 @@ function Racuni(){
           });
 
     },[]);
+    const expandRow = {
+        renderer: (row) => (
+          <div><button className="btn btn-success m-3">Vidi transakcije</button ><button className="btn btn-success m-3">Nova transakcija</button></div>
+        ),
+        nonExpandable: [1]
+      };
     if(tableData){
-        var i=0;
         return(
             <>
             <div className="container mt-5">
                 <ToolkitProvider
-                    keyField="id"
+                    keyField="IdRacuna"
                     data={ tableData }
                     columns={ header }
                     search> 
@@ -50,7 +55,7 @@ function Racuni(){
                       props => (
                     <div>
                         <SearchBar { ...props.searchProps } srText="Pretraživanje tablice" />
-                        <BootstrapTable { ...props.baseProps } striped hover pagination={ paginationFactory()} />
+                        <BootstrapTable { ...props.baseProps } striped hover pagination={ paginationFactory()} expandRow={expandRow} />
                      </div>
                       )
                     }   
