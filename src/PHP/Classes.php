@@ -18,8 +18,7 @@ class Racun{
 class Transakcije{
 
 }
-class PodatciZaPrijavu{
-}
+
 class Osoba{
     public $Sifra="";
     public $OIB="";

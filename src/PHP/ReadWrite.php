@@ -36,7 +36,7 @@ switch($_POST['RequestId']){
         while($oRow = $oStatement->fetch(PDO::FETCH_BOTH))
         {
             if($oRow['Korisnicko_ime']==$_POST['username'] && $oRow['Lozinka']==$_POST['password']){
-                $prijevljen = true;
+                $prijevljen = $oRow['Sifra'];
             }
         }
         echo $prijevljen;
@@ -125,8 +125,21 @@ switch($_POST['RequestId']){
         $oStatement = $oConnection->query($sQuery);
         echo $sQuery;
         break;
+    }case 'Dodaj_Transakciju':{
+        $sQuery="SELECT MAX(Sifra)as oldSifra FROM transakcije";
+        $sValue = $oConnection->query($sQuery)->fetch(PDO::FETCH_ASSOC);
+        $sNewSifra= $sValue['oldSifra'] || '10000000000';
+        $sNewSifra +=1;
+        $sQuery = "SELECT MAX(Stanje) as stanje FROM racuni WHERE idRacuni='".$_POST['SifraRacuna']."';";
+        $sValue = $oConnection->query($sQuery)->fetch(PDO::FETCH_ASSOC);
+        $stanje=$sValue['stanje']+$_POST['Iznos'];
+        $sQuery="INSERT INTO transakcije (Sifra, Sifra_racun, Sifra_bankar, Vrsta, Datum, Opis, Poziv_na_broj, Ime_platitelja, Iznos, Trenutno_Stanje) VALUES  ('".$sNewSifra."', '".$_POST['SifraRacuna']."', '".$_POST['SifraBankara']."', '".$_POST['Vrsta']."', '".date("d/m/Y")."', '".$_POST['Opis']."', '".$_POST['PozivNaBroj']."', '".$_POST['Iznos']."', '".$stanje."' );";
+        $oStatement = $oConnection->query($sQuery);
+        echo "'".$sNewSifra."', '".$_POST['SifraRacuna']."', '".$_POST['SifraBankara']."', '".$_POST['Vrsta']."', '".date("d/m/Y")."', '".$_POST['Opis']."', '".$_POST['PozivNaBroj']."', '".$_POST['Iznos']."', '".$stanje."'";
+        break;
     }
     default:
         break;
 }
+
 ?>

@@ -1,7 +1,9 @@
 import { Link, Outlet } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 
 function Administracija(){
+    const username = localStorage.getItem('username');
     return(
         <>
         <nav className='navbar navbar-expand-md justify-content-between bg-primary'>

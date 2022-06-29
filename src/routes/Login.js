@@ -1,5 +1,5 @@
 import {useState} from 'react';
-import { useNavigate} from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 function Login(){
@@ -15,8 +15,8 @@ function Login(){
             url: 'http://localhost/KV/bankovnisustav/src/PHP/ReadWrite.php',
             data: {
                 RequestId: 'Ucitaj_podatke_Login',
-                username: username ,//|| "",
-                password: password //|| ""
+                username: username || "",
+                password: password || ""
             },
             headers: { 
                 "Content-Type": "multipart/form-data",
@@ -25,6 +25,7 @@ function Login(){
             //handle success
             console.log(response.data);
             if(response.data){
+                localStorage.setItem('Sifra', response.data);
                 navigate('/administracija/klijenti');
             }
              }).catch(function (response) {

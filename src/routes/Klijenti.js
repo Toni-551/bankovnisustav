@@ -37,7 +37,6 @@ function Klijenti(){
         }).then(function (response) {
             //handle success
             console.log(response.data);
-            console.log(response);
             setData(response.data);
           }).catch(function (response) {
             //handle error
@@ -55,19 +54,21 @@ function Klijenti(){
         if(data){
         return(
             <>
-            <div className="container mt-5">
+            <div className="container my-5">
                 <ToolkitProvider
-                    keyField="id"
+                    keyField="OIB"
                     data={ data }
                     columns={ header }
                     search> 
                     {
                       props => (
                     <div>
-                        <SearchBar { ...props.searchProps } srText="Pretraživanje tablice" />
-                        <Link to={'/administracija/novaOsoba/klijent'}><button className="btn btn-success m-3">Novi Klijent</button></Link>
+                      <SearchBar { ...props.searchProps } srText="Pretraživanje tablice" />
+                      <Link to={'/administracija/novaOsoba/klijent'}><button className="btn btn-success m-3">Novi Klijent</button></Link>
+                      <div className="container wrapper">
                         <BootstrapTable { ...props.baseProps } striped hover pagination={ paginationFactory() } rowEvents={ rowEvents } />
-                     </div>
+                      </div>
+                    </div>
                       )
                     }   
                 </ToolkitProvider>

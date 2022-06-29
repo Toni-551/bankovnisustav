@@ -11,3 +11,11 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.table {
+  table-layout: auto !important;
+  }
+.wrapper{
+    overflow: auto;
+}
+
