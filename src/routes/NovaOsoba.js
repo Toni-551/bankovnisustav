@@ -12,9 +12,11 @@ function NoviKlijent(){
 
     var requestId;
     var route;
+    var klijent=false;
     if(IdOsoba=='klijent'){
         requestId='Upisi_novog_klijenta';
         route='klijenti';
+        klijent=true;
     }else{
         requestId='Upisi_novog_zaposlenika';
         route='zaposlenici';
@@ -46,7 +48,8 @@ function NoviKlijent(){
                 Prezime: inputs.Prezime,
                 Adresa: inputs.Adresa,
                 Telefon: inputs.Telefon,
-                Spol: inputs.Spol
+                Spol: inputs.Spol,
+                Iznos: klijent?inputs.RacunIznos:"",
             },
             headers: { 
                 "Content-Type": "multipart/form-data",
@@ -56,11 +59,10 @@ function NoviKlijent(){
             console.log(response.data);
             console.log(response);
             navigate('/administracija/'+route);
-          }).catch(function (response) {
+        }).catch(function (response) {
             //handle error
             console.log(response);
-          });
-
+        });
     }
     const handleChange = (event) => {
         const name = event.target.name;
@@ -128,10 +130,21 @@ function NoviKlijent(){
             <input
             className="form-control mb-3"
             type="text"
+            id="spol"
             name="Spol"
             value={inputs.Spol || ""}
             onChange={handleChange}
             />
+            {klijent?<div>
+            <label>Unesite početni iznos računa:</label>
+            <input
+            className="form-control mb-3"
+            type="text"
+            name="RacunIznos"
+            value={inputs.RacunIznos || ""}
+            onChange={handleChange}
+            /></div>:""
+            }
             <button className='btn btn-success' onClick={handleSubmit}>Dodaj novog klijenta</button>
         </form>
         </div>);

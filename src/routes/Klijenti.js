@@ -6,77 +6,73 @@ import ToolkitProvider, {Search} from 'react-bootstrap-table2-toolkit/dist/react
 import { useNavigate, Link } from "react-router-dom";
 
 
-
 function Klijenti(){
+  
+  const [data, setData] = useState(null);
+  const { SearchBar } = Search;
+  const navigate= useNavigate();
 
-    const [data, setData] = useState(null);
-    const { SearchBar } = Search;
-    const navigate= useNavigate();
+  const header = [
+      { text: 'Šifra', dataField: 'Sifra', sort: true },
+      { text: 'OIB', dataField: 'OIB', sort: true },
+      { text: 'Ime', dataField: 'Ime', sort: true },
+      { text: 'Prezime', dataField: 'Prezime', sort: true },
+      { text: 'Adresa', dataField: 'Adresa', sort: true },
+      { text: 'Telefon', dataField: 'Telefon', sort: true },
+      { text: 'Spol', dataField: 'Spol' },
+    ];
+    
 
-    const header = [
-        { text: 'Šifra', dataField: 'Sifra', sort: true },
-        { text: 'OIB', dataField: 'OIB', sort: true },
-        { text: 'Ime', dataField: 'Ime', sort: true },
-        { text: 'Prezime', dataField: 'Prezime', sort: true },
-        { text: 'Adresa', dataField: 'Adresa', sort: true },
-        { text: 'Telefon', dataField: 'Telefon', sort: true },
-        { text: 'Spol', dataField: 'Spol' },
-      ];
-      
-
-      useEffect(() => {
-        axios({
-            method: 'post',
-            url: 'http://localhost/KV/bankovnisustav/src/PHP/ReadWrite.php',
-            data: {
-                RequestId: 'Ucitaj_podatke_klijenti',
-            },
-            headers: { 
-                "Content-Type": "multipart/form-data",
-            } ,
-        }).then(function (response) {
-            //handle success
-            console.log(response.data);
-            setData(response.data);
-          }).catch(function (response) {
-            //handle error
-            console.log(response);
-          });
-        }, []);
-
-        const rowEvents = {
-            onClick: (e, row, rowIndex) => {
-                console.log(row.Sifra);
-                navigate("/administracija/klijent/"+row.Sifra);
-            }
-          };
-
-        if(data){
-        return(
-            <>
-            <div className="container my-5">
-                <ToolkitProvider
-                    keyField="OIB"
-                    data={ data }
-                    columns={ header }
-                    search> 
-                    {
-                      props => (
-                    <div>
-                      <SearchBar { ...props.searchProps } srText="Pretraživanje tablice" />
-                      <Link to={'/administracija/novaOsoba/klijent'}><button className="btn btn-success m-3">Novi Klijent</button></Link>
-                      <div className="container wrapper">
-                        <BootstrapTable { ...props.baseProps } striped hover pagination={ paginationFactory() } rowEvents={ rowEvents } />
-                      </div>
-                    </div>
-                      )
-                    }   
-                </ToolkitProvider>
-            </div>
-
-            </>
-        );
-        }
+  useEffect(() => {
+    axios({
+        method: 'post',
+        url: 'http://localhost/KV/bankovnisustav/src/PHP/ReadWrite.php',
+        data: {
+            RequestId: 'Ucitaj_podatke_klijenti',
+        },
+        headers: { 
+            "Content-Type": "multipart/form-data",
+        } ,
+    }).then(function (response) {
+        //handle success
+        console.log(response.data);
+        setData(response.data);
+      }).catch(function (response) {
+        //handle error
+        console.log(response);
+      });
+    }, []);
+  const rowEvents = {
+      onClick: (e, row, rowIndex) => {
+          console.log(row.Sifra);
+          navigate("/administracija/klijent/"+row.Sifra);
+      }
+    };
+  if(data){
+    return(
+      <>
+        <div className="container my-5">
+            <ToolkitProvider
+                keyField="OIB"
+                data={ data }
+                columns={ header }
+                search> 
+                {
+                  props => (
+                <div>
+                  <SearchBar { ...props.searchProps } srText="Pretraživanje tablice" />
+                  <Link to={'/administracija/novaOsoba/klijent'}><button className="btn btn-success m-3">Novi Klijent</button></Link>
+                  <div className="container wrapper">
+                    <BootstrapTable { ...props.baseProps } striped hover pagination={ paginationFactory() } rowEvents={ rowEvents } />
+                  </div>
+                </div>
+                  )
+                }   
+            </ToolkitProvider>
+        </div>
+      </>
+    );
+  }
     
 }
 

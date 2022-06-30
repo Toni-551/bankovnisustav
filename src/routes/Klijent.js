@@ -121,24 +121,35 @@ function Klijent(){
     }
 }
 
-
-
-///777777777777777777777777777777777777777777777777777777777777777777777
+/////////////////////////////////
 function TableRacuni(props){
 
     const [showTransakcija, setShowTransakcija]= useState(false);
+    const [newTransakcija, setNewTransakcija]= useState(false);
+    const [transactionData, setTransactionData]= useState(null);
     const [tableData, setTableData]= useState(null);
     const [sifraRacuna, setSifraRacuna]= useState(null);
     const [inputs, setInputs] = useState({"Vrsta":"Uplata"});
-    const sifraBankara = localStorage.getItem('Sifra')
+    const sifraBankara = localStorage.getItem('Sifra');
     const header = [
         { text: 'Šifra', dataField: 'IdRacuna', sort: true },
         { text: 'Stanje', dataField: 'Stanje', sort: true },
         { text: 'Datum otvaranja', dataField: 'DatumOtvaranja', sort: true },
       ];
+    const headerTransakcije = [
+        { text: 'Šifra', dataField: 'Sifra', sort: true },
+        { text: 'šifra bankara', dataField: 'Bankar.Sifra', sort: true },
+        { text: 'Vrsta', dataField: 'Vrsta', sort: true },
+        { text: 'Datum', dataField: 'Datum', sort: true },
+        { text: 'Iznos', dataField: 'Iznos', sort: true },
+        { text: 'Trenutno stanje', dataField: 'TrenutnoStanje', sort: true },
+        { text: 'Platitelj', dataField: 'Platitelj', sort: true },
+        { text: 'Opis', dataField: 'Opis', sort: true },
+        { text: 'Poziv na broj', dataField: 'PozivNaBroj', sort: true },
+      ];
     useEffect(() => {
         UcitajRacune();
-
+        
     },[]);
 
     async function UcitajRacune(){
@@ -164,10 +175,18 @@ function TableRacuni(props){
     if(!tableData)return;
     if(tableData.length==0)return;
 
-    const modalTansactionOpen = (event) => {
+    const modalTansactionNewOpen = (event) => {
+        setInputs({"Vrsta": "Uplata"});
+        setNewTransakcija(true);
+    }
+    const modalTansactionNewClose = (event) => {
+        setNewTransakcija(false);
+    }
+    const modalTansactionViewOpen=(event)=>{
+        setTransactionData(tableData.find(x => x.IdRacuna==sifraRacuna).loTransakcije);
         setShowTransakcija(true);
     }
-    const modalTansactionClose = (event) => {
+    const modalTansactionViewClose = (event) => {
         setShowTransakcija(false);
     }
 
@@ -185,20 +204,21 @@ function TableRacuni(props){
         }).then(function (response) {
             //handle success
             console.log(response.data);
+            setTableData([]);
+            UcitajRacune();
             //window.location.reload();
         }).catch(function (response) {
             //handle error
             console.log(response);
         });
-        setTableData([]);
-        UcitajRacune();
+        
     }
 
     const expandRow = {
         renderer: (row) => (
             <div>
-                <button className="btn btn-success m-3">Vidi transakcije</button>
-                <button className="btn btn-success m-3" onClick={modalTansactionOpen} onMouseUp={setSifraRacuna(row.IdRacuna)}>Nova transakcija</button>
+                <button className="btn btn-success m-3" onClick={modalTansactionViewOpen}>Vidi transakcije</button>
+                <button className="btn btn-success m-3" onClick={modalTansactionNewOpen} onMouseUp={setSifraRacuna(row.IdRacuna)}>Nova transakcija</button>
                 <button className="btn btn-danger m-3" onClick={()=>handleClickDeleteAccount(row.IdRacuna)}>Obriši račun</button>
             </div>
         ),
@@ -213,10 +233,9 @@ function TableRacuni(props){
         const name = event.target.name;
         const value = event.target.value;
         setInputs(values => ({...values, [name]: value}));
-        console.log(value);
     }
     function ClickIzvrsiTransakciju (){
-        if(sifraRacuna.length==0 || sifraBankara==0){alert("Greška u programu sa šiframa"); return;}
+        if(sifraRacuna.length==0 || sifraBankara.length==0){alert("Greška u programu sa šiframa"); return;}
         console.log(sifraRacuna+" "+sifraBankara+" "+inputs.Vrsta+inputs.Opis+inputs.PozivNaBroj+inputs.ImePlatitelja);
         axios({
             method: 'post',
@@ -235,14 +254,15 @@ function TableRacuni(props){
                 "Content-Type": "multipart/form-data",
             } ,
         }).then(function (response) {
-          //handle success
-          console.log(response);
-          setShowTransakcija(false);
-          alert("jej");
+            //handle success
+            console.log(response);
+            setNewTransakcija(false);
+            setTableData([]);
+            UcitajRacune();
           
         }).catch(function (response) {
-          //handle error
-          console.log(response);
+            //handle error
+            console.log(response);
         }); 
     }
      
@@ -252,37 +272,47 @@ function TableRacuni(props){
             <div className="container wrapper">
                 <BootstrapTable keyField="IdRacuna" data={ tableData } columns={ header } striped hover pagination={ paginationFactory() } expandRow={expandRow}/>
             </div>
-        
-        <Modal show={showTransakcija} onHide={modalTansactionClose}> 
-        <Modal.Header closeButton>
-          <Modal.Title>Nova Transakcija</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-            <form>
-            <label className="mb-3">Šifra računa: </label><br />
-            <label>Ime platitelja:</label>
-            <input
-            className="form-control mb-3"
-            type="text"
-            name="ImePlatitelja"
-            value={inputs.ImePlatitelja || ""}
-            onChange={handleChange}
-            />
-            <label>Vrsta:</label>
-            <select name="Vrsta" className="form-control" onChange={handleChange}>
-                <option value="Uplata">Uplata</option>
-                <option value="Isplata">Isplata</option>
-            </select><br />
-            <label>Iznos:</label>
-            <input
-            className="form-control mb-3"
-            type="number"
-            name="Iznos"
-            value={inputs.Iznos||""}
-            onChange={handleChange}
-            />
-            <label>Poziv na broj:</label>
-            <div className="row mx-1">
+
+            <Modal size="xl" show={showTransakcija} onHide={modalTansactionViewClose}> 
+            <Modal.Header closeButton>
+              <Modal.Title>Pregled Transakcija</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                <div className="container wrapper">
+                    <BootstrapTable keyField="Sifra" data={ transactionData } columns={ headerTransakcije } striped hover pagination={ paginationFactory() } />
+                </div>
+            </Modal.Body>
+            </Modal >
+
+            <Modal show={newTransakcija} onHide={modalTansactionNewClose}> 
+            <Modal.Header closeButton>
+              <Modal.Title>Nova Transakcija</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                <form>
+                <label className="mb-3">Šifra računa: </label><br />
+                <label>Ime platitelja:</label>
+                <input
+                className="form-control mb-3"
+                type="text"
+                name="ImePlatitelja"
+                value={inputs.ImePlatitelja || ""}
+                onChange={handleChange}
+                />
+                <label>Vrsta:</label>
+                <select name="Vrsta" className="form-control" onChange={handleChange}>
+                    <option value="Uplata">Uplata</option>
+                    <option value="Isplata">Isplata</option>
+                </select><br />
+                <label>Iznos:</label>
+                <input
+                className="form-control mb-3"
+                type="number"
+                name="Iznos"
+                value={inputs.Iznos||""}
+                onChange={handleChange}
+                />
+                <label>Poziv na broj:</label>
                 <input
                 className="form-control mb-3 col"
                 type="text"
@@ -290,24 +320,22 @@ function TableRacuni(props){
                 value={inputs.PozivNaBroj||""}
                 onChange={handleChange}
                 />
-                <label className="col pt-1">{"asd"}</label>
-            </div><br />
-            <label>Opis:</label>
-            <input
-            className="form-control mb-3"
-            type="text"
-            name="Opis"
-            value={inputs.Opis||""}
-            onChange={handleChange}
-            /> 
-            </form>
-        </Modal.Body>
-        <Modal.Footer>
-            <Button variant="secondary" onClick={modalTansactionClose}>Close</Button>
-            <Button variant="primary" onClick={()=>ClickIzvrsiTransakciju()}>Izvrši transakciju</Button>
-        </Modal.Footer>
-    </Modal >
-    </div>
+                <label>Opis:</label>
+                <input
+                className="form-control mb-3"
+                type="text"
+                name="Opis"
+                value={inputs.Opis||""}
+                onChange={handleChange}
+                /> 
+                </form>
+            </Modal.Body>
+            <Modal.Footer>
+                <Button variant="secondary" onClick={modalTansactionNewClose}>Close</Button>
+                <Button variant="primary" onClick={()=>ClickIzvrsiTransakciju()}>Izvrši transakciju</Button>
+            </Modal.Footer>
+            </Modal >
+        </div>
     );
 }
 

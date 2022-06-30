@@ -6,17 +6,41 @@ class Racun{
     public $Stanje="";
     public $DatumOtvaranja="";
     public $oKlijent=null;
-    public function __construct($idracuna, $sifraklijenta, $stanje, $datum, $klijent){
+    public $loTransakcije=[];
+    public function __construct($idracuna, $sifraklijenta, $stanje, $datum, $klijent, $transakcije){
         $this->IdRacuna=$idracuna;
         $this->SifraKlijenta=$sifraklijenta;
         $this->Stanje=$stanje;
         $this->DatumOtvaranja=$datum;
         $this->oKlijent=$klijent;
+        $this->loTransakcije=$transakcije;
     }
 }
 
-class Transakcije{
-
+class Transakcija{
+    public $Sifra = "";
+    public $SifraRacuna = "";
+    public $Bankar = "";
+    public $Vrsta = "";
+    public $Datum = "";
+    public $Opis = "";
+    public $PozivNaBroj = "";
+    public $Platitelj = "";
+    public $Iznos = "";
+    public $TrenutnoStanje = "";
+    public function __construct($sifra="", $sifra_racun="", $bankar="", $vrsta="", $datum="", $opis="", $poziv_na_broj="",$platitelja="" , $iznos="", $trenutno_stanje="")
+    {
+        $this->Sifra = $sifra;
+        $this->SifraRacuna = $sifra_racun;
+        $this->Bankar = $bankar;
+        $this->Vrsta = $vrsta;
+        $this->Datum = $datum;
+        $this->Opis = $opis;
+        $this->PozivNaBroj = $poziv_na_broj;
+        $this->Platitelj = $platitelja;
+        $this->Iznos = $iznos;
+        $this->TrenutnoStanje=$trenutno_stanje;
+    }
 }
 
 class Osoba{

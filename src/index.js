@@ -19,6 +19,9 @@ import Zaposlenici from './routes/Zaposlenici';
 import Klijent from './routes/Klijent';
 import NoviKlijent from './routes/NovaOsoba';
 import Zaposlenik from './routes/Zaposlenik';
+import OnlineBankarstvo from './routes/OnlineBankarstvo';
+import Pocetna from './routes/Pocetana';
+import OnlineRacun from './routes/OnlineRacun';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -27,6 +30,10 @@ root.render(
       <Route path="/" element={<App/>}>
         <Route path="login" element={<Login />} />
         <Route path="" element={<Navigate to="/login" />} />
+        <Route path="OnlineBankarstvo/" element={<OnlineBankarstvo/>}>
+          <Route path="racun/:IdRacun" element={<OnlineRacun/>} />
+          <Route path="" element={<Pocetna/>} />
+        </Route>
         <Route path="administracija/" element={<Administracija/>}>
           <Route path="klijenti" element={<Klijenti />} />
           <Route path="novaOsoba/:IdOsoba" element={<NoviKlijent />} />
