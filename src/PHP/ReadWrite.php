@@ -55,7 +55,7 @@ switch($_POST['RequestId']){
         echo $prijevljen;
         break;
     }case 'Ucitaj_podatke_klijenta':{
-        $sQuery="SELECT * FROM klijenti WHERE Sifra=".$_POST['KlijentID'].";"; 
+        $sQuery="SELECT * FROM klijenti WHERE Sifra='".$_POST['KlijentID']."';"; 
         $oStatement = $oConnection->query($sQuery);
         while($oRow = $oStatement->fetch(PDO::FETCH_BOTH))
         {
@@ -201,7 +201,7 @@ switch($_POST['RequestId']){
         $oStatement = $oConnection->query($sQuery);
         break;
     }case 'Obrisi_racun':{
-        $sQuery="UPDATE racuni SET Sifra_klijenta='' WHERE idRacuni='".$_POST['Sifra']."'"; 
+        $sQuery="DELETE from racuni WHERE idRacuni='".$_POST['Sifra']."'"; 
         $oStatement = $oConnection->query($sQuery);
         echo $sQuery;
         break;
@@ -212,14 +212,29 @@ switch($_POST['RequestId']){
         if(!$sNewSifra)$sNewSifra='10000000000';
         $sNewSifra +=1;
 
-        $sQuery = "SELECT MAX(Stanje) as stanje FROM racuni WHERE idRacuni='".$_POST['SifraRacuna']."';";
-        $sValue = $oConnection->query($sQuery)->fetch(PDO::FETCH_ASSOC);
-        $stanje=$sValue['stanje']+$_POST['Iznos'];
-
-        $sQuery="INSERT INTO transakcije (Sifra, Sifra_racun, Sifra_bankar, Vrsta, Datum, Opis, Poziv_na_broj, Ime_platitelja , Iznos, Trenutno_Stanje) VALUES  ('".$sNewSifra."', '".$_POST['SifraRacuna']."', '".$_POST['SifraBankara']."', '".$_POST['Vrsta']."', '".date("d/m/Y")."', '".$_POST['Opis']."', '".$_POST['PozivNaBroj']."', '".$_POST['ImePlatitelja']."', '".$_POST['Iznos']."', '".$stanje."' )";
+        $sQuery="INSERT INTO transakcije (Sifra, Sifra_racun, Sifra_bankar, Vrsta, Datum, Opis, Poziv_na_broj, Ime_platitelja , Iznos, Trenutno_Stanje) VALUES  ('".$sNewSifra."', '".$_POST['SifraRacuna']."', '".$_POST['SifraBankara']."', '".$_POST['Vrsta']."', '".date("d/m/Y")."', '".$_POST['Opis']."', '".$_POST['PozivNaBroj']."', '".$_POST['ImePlatitelja']."', '".$_POST['Iznos']."', '".$_POST['TrenutnoStanje']."' )";
         $oStatement = $oConnection->query($sQuery);
         
-        $sQuery="UPDATE racuni SET Stanje='".$stanje."' WHERE idRacuni='".$_POST['SifraRacuna']."'";
+        $sQuery="UPDATE racuni SET Stanje='".$_POST['TrenutnoStanje']."' WHERE idRacuni='".$_POST['SifraRacuna']."'";
+        $oStatement = $oConnection->query($sQuery);
+        break;
+    }case 'Provjera_racuna':{
+        $RacunPostoji=0;
+        $sQuery="SELECT * FROM racuni WHERE Sifra_klijenta!=''";
+        $oStatement = $oConnection->query($sQuery);
+        while($oRow = $oStatement->fetch(PDO::FETCH_BOTH)){
+            if($oRow['idRacuni']==$_POST['Sifra']){
+                $RacunPostoji=1;
+            }
+        }
+        echo $RacunPostoji;
+        break;
+    }case 'Azuriraj_klijenta':{
+        $sQuery="UPDATE klijenti SET Ime='".$_POST['Ime']."',  Prezime='".$_POST['Prezime']."' , Adresa='".$_POST['Adresa']."' , Telefon='".$_POST['Telefon']."',  Spol='".$_POST['Spol']."'  WHERE Sifra='".$_POST['KlijentID']."';";
+        $oStatement = $oConnection->query($sQuery);
+        break;
+    }case 'Dodaj_podatke_za_prijevu_klijent':{
+        $sQuery="INSERT INTO podatci_za_prijavu_klijenti (Sifra, Korisnicko_ime, Lozinka) VALUES ('".$_POST['sifra']."', '".$_POST['username']."', '".$_POST['password']."')";
         $oStatement = $oConnection->query($sQuery);
         break;
     }

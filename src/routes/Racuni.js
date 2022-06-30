@@ -5,6 +5,7 @@ import paginationFactory from 'react-bootstrap-table2-paginator';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import ToolkitProvider, {Search} from 'react-bootstrap-table2-toolkit/dist/react-bootstrap-table2-toolkit';
+import $ from 'jquery';
 
 function Racuni(){
     const [tableData, setTableData]= useState(null);
@@ -93,6 +94,15 @@ function Racuni(){
     }
     function ClickIzvrsiTransakciju (){
       if(sifraRacuna.length==0 || sifraBankara.length==0){alert("Greška u programu sa šiframa"); return;}
+      if(parseFloat(inputs.Iznos)<0 || parseFloat(inputs.Iznos)>parseFloat(tableData.Stanje)){
+        $('#Iznos').attr('class','form-control is-invalid');
+        return;
+    }else{
+        $('#Iznos').attr('class','form-control is-valid');
+    }
+      if(!window.confirm("Želite li izvršiti transakciju?")){
+        return;
+    }
       console.log(sifraRacuna+" "+sifraBankara+" "+inputs.Vrsta+inputs.Opis+inputs.PozivNaBroj+inputs.ImePlatitelja);
       axios({
           method: 'post',
@@ -151,7 +161,7 @@ function Racuni(){
               </div>
           </Modal.Body>
           </Modal >
-          
+
           <Modal show={newTransakcija} onHide={modalTansactionNewClose}> 
           <Modal.Header closeButton>
             <Modal.Title>Nova Transakcija</Modal.Title>
@@ -177,9 +187,13 @@ function Racuni(){
               className="form-control mb-3"
               type="number"
               name="Iznos"
+              id="Iznos"
               value={inputs.Iznos||""}
               onChange={handleChange}
               />
+               <div className="invalid-feedback mb-3">
+                  Nemože se uplatit više nego što ima na računu novaca
+                </div>
               <label>Poziv na broj:</label>
               <input
               className="form-control mb-3 col"

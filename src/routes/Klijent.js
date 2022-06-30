@@ -1,10 +1,11 @@
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import axios from 'axios';
 import { useEffect, useState } from "react";
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
+import $ from 'jquery';
 
 
 function Klijent(){
@@ -12,6 +13,9 @@ function Klijent(){
     const [show, setShow] = useState(false);
     const [value, setValue]= useState(0);
     const [data, setData] = useState(null);
+    const [username, setUsername] = useState(null);
+    const [password, setPassword] = useState(null);
+    const [onlineBankarstvo, setonlineBankarstvo]= useState(false);
     const { KlijentID } = useParams();
     const navigate = useNavigate();
 
@@ -42,7 +46,16 @@ function Klijent(){
     const modalClose = (event) => {
         setShow(false);
     }
+    const modalonlineBankarstvoClose = (event) => {
+        setonlineBankarstvo(false);
+    }
+    const modalonlineBankarstvoOpen=(event)=>{
+        setonlineBankarstvo(true);
+    }
     const handleClickDelete = (event) => {
+        if(!window.confirm("Želite li obrisati klijenta?")){
+            return;
+        }
         axios({
             method: 'post',
             url: 'http://localhost/KV/bankovnisustav/src/PHP/ReadWrite.php',
@@ -64,6 +77,11 @@ function Klijent(){
           });
     }
     const handleClickNoviRacun = (event) => {
+        if(!window.confirm("Želite li dodati novi račun?")){
+
+            return;
+        }
+        
         axios({
             method: 'post',
             url: 'http://localhost/KV/bankovnisustav/src/PHP/ReadWrite.php',
@@ -85,17 +103,45 @@ function Klijent(){
         });
     }
 
+    const handleClickOnlineBankarstvo=(event)=>{
+        if(!window.confirm("Želite li napraviti online bankarstvo?")){
+            return;
+        }
+        axios({
+            method: 'post',
+            url: 'http://localhost/KV/bankovnisustav/src/PHP/ReadWrite.php',
+            data: {
+                RequestId: 'Dodaj_podatke_za_prijevu_klijent',
+                sifra: KlijentID,
+                username: username,
+                password: password
+            },
+            headers: { 
+                "Content-Type": "multipart/form-data",
+            } ,
+        }).then(function (response) {
+          //handle success
+          console.log(response.data);
+          alert("Uspiješno napravljeno online bankarstvo");
+          setonlineBankarstvo(false);
+        }).catch(function (response) {
+          //handle error
+          console.log(response);
+        });
+
+    }
     if(data){
     return(
         <div className="container text-center mt-5 col-sm-12 col-md-8">
             <h1 className="display-4">{data.Ime +" "+ data.Prezime}</h1>
             <p className="lead">{data.OIB}</p>
             <hr></hr>
-            <button className="btn btn-success m-3" onClick={modalOpen}>Novi Račun</button>
-            <button className="btn btn-success m-3">Online bankarstvo</button>
+            <button className="btn btn-success m-3" id="noviRacun" onClick={modalOpen}>Novi Račun</button>
+            <Link className="btn btn-success m-3" to={"/administracija/azurirajklijenta/"+data.Sifra}>Ažuriraj klijenta</Link>
+            <button className="btn btn-success m-3" onClick={modalonlineBankarstvoOpen}>Online bankarstvo</button>
             <button className="btn btn-danger m-3" onClick={handleClickDelete}>Obriši Klijenta</button>
             <TableRacuni sifra={data.Sifra} />
-            <Modal show={show} onHide={modalClose}> 
+            <Modal centered show={show} onHide={modalClose}> 
                 <Modal.Header closeButton>
                   <Modal.Title>Novi Račun</Modal.Title>
                 </Modal.Header>
@@ -114,6 +160,37 @@ function Klijent(){
                 <Modal.Footer>
                     <Button variant="secondary" onClick={modalClose}>Close</Button>
                     <Button variant="primary" onClick={handleClickNoviRacun}>Napravi račun</Button>
+                </Modal.Footer>
+            </Modal >
+
+            <Modal show={onlineBankarstvo} onHide={modalonlineBankarstvoClose}> 
+            <Modal.Header closeButton>
+              <Modal.Title>Nova Transakcija</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                <form>
+                <label className="mb-3">Šifra računa: </label><br />
+                <label>Username:</label>
+                <input
+                className="form-control mb-3"
+                type="text"
+                name="Username"
+                value={username || ""}
+                onChange={(e)=>setUsername(e.target.value)}
+                />
+                <label>Password:</label>
+                <input
+                className="form-control mb-3"
+                type="password"
+                name="Password"
+                value={password || ""}
+                onChange={(e)=>setPassword(e.target.value)}
+                />
+                </form>
+            </Modal.Body>
+            <Modal.Footer>
+                    <Button variant="secondary" onClick={modalonlineBankarstvoClose}>Close</Button>
+                    <Button variant="primary" onClick={handleClickOnlineBankarstvo}>Napravi račun</Button>
                 </Modal.Footer>
             </Modal >
         </div>
@@ -175,6 +252,9 @@ function TableRacuni(props){
     if(!tableData)return;
     if(tableData.length==0)return;
 
+    if(tableData.length>=3){
+        $('#noviRacun').attr("disabled");
+    }
     const modalTansactionNewOpen = (event) => {
         setInputs({"Vrsta": "Uplata"});
         setNewTransakcija(true);
@@ -189,8 +269,12 @@ function TableRacuni(props){
     const modalTansactionViewClose = (event) => {
         setShowTransakcija(false);
     }
+   
 
     async function handleClickDeleteAccount(sifraRacuna){
+        if(!window.confirm("Želite li Obrisati račun?")){
+            return;
+        }
         axios({
             method: 'post',
             url: 'http://localhost/KV/bankovnisustav/src/PHP/ReadWrite.php',
@@ -236,7 +320,15 @@ function TableRacuni(props){
     }
     function ClickIzvrsiTransakciju (){
         if(sifraRacuna.length==0 || sifraBankara.length==0){alert("Greška u programu sa šiframa"); return;}
-        console.log(sifraRacuna+" "+sifraBankara+" "+inputs.Vrsta+inputs.Opis+inputs.PozivNaBroj+inputs.ImePlatitelja);
+        if(parseFloat(inputs.Iznos)<0 || parseFloat(inputs.Iznos)>parseFloat(tableData.Stanje)){
+            $('#Iznos').attr('class','form-control is-invalid');
+            return;
+        }else{
+            $('#Iznos').attr('class','form-control is-valid');
+        }
+        if(!window.confirm("Želite li izvršiti transakciju?")){
+            return;
+        }
         axios({
             method: 'post',
             url: 'http://localhost/KV/bankovnisustav/src/PHP/ReadWrite.php',
@@ -266,7 +358,6 @@ function TableRacuni(props){
         }); 
     }
      
-
     return(
         <div className="container my-5">
             <div className="container wrapper">
@@ -308,10 +399,15 @@ function TableRacuni(props){
                 <input
                 className="form-control mb-3"
                 type="number"
+                id="tableData"
                 name="Iznos"
                 value={inputs.Iznos||""}
                 onChange={handleChange}
+                required
                 />
+                <div className="invalid-feedback mb-3">
+                    Nemoguća isplata više novaca nego što ima na računu
+                </div>
                 <label>Poziv na broj:</label>
                 <input
                 className="form-control mb-3 col"

@@ -1,11 +1,12 @@
-import { Link, Outlet, Navigate } from "react-router-dom";
+import { Link, Outlet, Navigate, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from 'axios';
 
 function OnlineBankarstvo(){
-
+    
     const [data, setData]= useState(null);
     const sifraKlijenta = localStorage.getItem('Sifra');
+    const {navigate}=useNavigate();
 
     const handleClick=(event)=>{
        localStorage.removeItem('Sifra');
@@ -31,14 +32,16 @@ function OnlineBankarstvo(){
             console.log(response);
           });
     }, []);
+
+
     if(localStorage.getItem('Sifra')){
         if(!data)return;
         console.log(data);
         var i = 0;
         function LoadNav(){
             return(
-            data.map((x)=>(<li className="nav-item">
-                        <Link className='btn text-white' to={"racun/"+x.IdRacuna}>Racni {i=i+1}</Link>
+            data.map((x)=>(<li id="x.IdRacuna" className="nav-item">
+                        <Link className='btn text-white' to={"/OnlineBankarstvo/racun/"+x.IdRacuna}><button className='btn text-white'  >Racni {i=i+1}</button></Link>
                     </li>) )
                     );
         }

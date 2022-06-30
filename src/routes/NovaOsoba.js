@@ -2,7 +2,7 @@ import React from 'react';
 import {useState} from 'react';
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
-import $ from 'jquery'
+import $ from 'jquery';
 
 function NoviKlijent(){
 
@@ -24,7 +24,7 @@ function NoviKlijent(){
     const handleSubmit = (event) => {
         event.preventDefault();
         var validation = true;
-        var reg = /^\d+$/
+        var reg = /^\d+$/;
         if(!($('#telefon').val().length == 10 && reg.test($('#telefon').val()))){
             $('#telefon').attr('class','form-control is-invalid');
             validation=false; 
@@ -38,6 +38,9 @@ function NoviKlijent(){
             $('#oib').attr('class','form-control is-valid');
         }
         if(!validation)return;
+        if(!window.confirm("Želite li dodati novu osobu?")){
+            return;
+        }
         axios({
             method: 'post',
             url: 'http://localhost/KV/bankovnisustav/src/PHP/ReadWrite.php',

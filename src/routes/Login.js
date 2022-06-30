@@ -1,6 +1,7 @@
 import {useState} from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import $ from 'jquery';
 
 function Login(){
     const [username, setUsername]= useState();
@@ -29,10 +30,14 @@ function Login(){
             if(response.data){
                 localStorage.setItem('Sifra', response.data);
                 navigate(route);
+            }else{
+                $("#username").attr("class", "form-control is-invalid");
+            $("#password").attr("class", "form-control is-invalid");
             }
              }).catch(function (response) {
             //handle error
             console.log(response);
+            
           });
         }
     const handleChange=(event)=>{
@@ -45,13 +50,14 @@ function Login(){
           }
           
     }
-        
+
     return(
     <div className="col-lg-6 mx-auto mt-5">
     <div className="card">
         <div className="card-header">Prijava</div>
         <div className="card-body px-4 py-5 px-md-5">
             <form>
+                
                 <div className="form-outline">
                     <label className="form-label" htmlFor="username">Username:</label>
                     <input type="text" id="username" className="form-control" onChange={(e)=>{setUsername(e.target.value)}} />
@@ -59,6 +65,7 @@ function Login(){
                 <div className="form-outline">
                     <label className="form-label" htmlFor="password">Password:</label>
                     <input type="password" id="password" className="form-control" onChange={(e)=>{setPassword(e.target.value)}} />
+                    <div className="invalid-feedback mb-3"> Username ili pasword su neispravni</div>
                 </div>
                 <button className='btn btn-primary mt-2' onClick={handleSubmit}>Prijava</button>
                 

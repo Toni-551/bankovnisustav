@@ -22,6 +22,7 @@ import Zaposlenik from './routes/Zaposlenik';
 import OnlineBankarstvo from './routes/OnlineBankarstvo';
 import Pocetna from './routes/Pocetana';
 import OnlineRacun from './routes/OnlineRacun';
+import AzurirajKlijenta from './routes/AžurirajKlijenta';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -38,6 +39,7 @@ root.render(
           <Route path="klijenti" element={<Klijenti />} />
           <Route path="novaOsoba/:IdOsoba" element={<NoviKlijent />} />
           <Route path="klijent/:KlijentID" element={<Klijent />} />
+          <Route path="azurirajklijenta/:KlijentID" element={<AzurirajKlijenta />} />
           <Route path="zaposlenik/:ZaposlenikID" element={<Zaposlenik />} />
           <Route path="racuni" element={<Racuni/>} />
           <Route path="zaposlenici" element={<Zaposlenici/>} />
