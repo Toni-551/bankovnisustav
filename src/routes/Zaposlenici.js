@@ -53,7 +53,7 @@ function Zaposlenici(){
 
         if(data){
         return(
-            <div className="container mt-5">
+            <div className="container mt-5 col-sm-12 col-md-8">
                 <ToolkitProvider
                     keyField="id"
                     data={ data }

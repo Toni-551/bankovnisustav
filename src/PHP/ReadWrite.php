@@ -111,7 +111,7 @@ switch($_POST['RequestId']){
         echo $sQuery;
         break;
     }case 'Ucitaj_racun':{
-        $sQuery="SELECT * FROM transakcije WHERE Sifra_racun='".$_POST['Sifra']."'"; 
+        $sQuery="SELECT * FROM transakcije WHERE Sifra_racun='".$_POST['Sifra']."' ORDER BY Sifra DESC"; 
         $aStatement = $oConnection->query($sQuery);
         $oTransakcije= array();
         while($aRow = $aStatement->fetch(PDO::FETCH_BOTH))
@@ -219,7 +219,7 @@ switch($_POST['RequestId']){
         $sQuery="INSERT INTO transakcije (Sifra, Sifra_racun, Sifra_bankar, Vrsta, Datum, Opis, Poziv_na_broj, Ime_platitelja , Iznos, Trenutno_Stanje) VALUES  ('".$sNewSifra."', '".$_POST['SifraRacuna']."', '".$_POST['SifraBankara']."', '".$_POST['Vrsta']."', '".date("d/m/Y")."', '".$_POST['Opis']."', '".$_POST['PozivNaBroj']."', '".$_POST['ImePlatitelja']."', '".$_POST['Iznos']."', '".$stanje."' )";
         $oStatement = $oConnection->query($sQuery);
         
-        $sQuery="UPDATE racuni SET Stanje='".$stanje."'";
+        $sQuery="UPDATE racuni SET Stanje='".$stanje."' WHERE idRacuni='".$_POST['SifraRacuna']."'";
         $oStatement = $oConnection->query($sQuery);
         break;
     }

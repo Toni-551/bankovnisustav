@@ -51,7 +51,7 @@ function Klijenti(){
   if(data){
     return(
       <>
-        <div className="container my-5">
+        <div className="container my-5 col-sm-12 col-md-8">
             <ToolkitProvider
                 keyField="OIB"
                 data={ data }

@@ -36,7 +36,7 @@ function OnlineBankarstvo(){
         console.log(data);
         var i = 0;
         function LoadNav(){
-        return(
+            return(
             data.map((x)=>(<li className="nav-item">
                         <Link className='btn text-white' to={"racun/"+x.IdRacuna}>Racni {i=i+1}</Link>
                     </li>) )
@@ -49,7 +49,7 @@ function OnlineBankarstvo(){
                     <LoadNav />
                 </ul>
                 <div className="navbar-nav ml-auto">
-                    <Link className='btn text-white' to="/Login" onClick={handleClick}  >Odjava</Link>       
+                    <Link className='btn text-white' to="/Login" onClick={handleClick} >Odjava</Link>       
                 </div>    
             </nav>
             <Outlet />

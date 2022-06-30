@@ -54,13 +54,13 @@ function Zaposlenik(){
 
     if(data){
     return(
-        <div className="container text-center mt-5">
+        <div className="container text-center mt-5 col-sm-12 col-md-8">
             <h1 className="display-4">{data.Ime +" "+ data.Prezime}</h1>
             <p className="lead">{data.OIB}</p>
             <p className="lead">{data.Sifra}</p>
             <hr></hr>
-            <button className="btn btn-danger m-3" onClick={handleClickDelete}>Obriši zaposlenika</button>
             <button className="btn btn-success m-3">Registracija za online bankarstvo</button>
+            <button className="btn btn-danger m-3" onClick={handleClickDelete}>Obriši zaposlenika</button>
         </div>
     );
     }

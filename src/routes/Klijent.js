@@ -87,7 +87,7 @@ function Klijent(){
 
     if(data){
     return(
-        <div className="container text-center mt-5">
+        <div className="container text-center mt-5 col-sm-12 col-md-8">
             <h1 className="display-4">{data.Ime +" "+ data.Prezime}</h1>
             <p className="lead">{data.OIB}</p>
             <hr></hr>
@@ -217,7 +217,7 @@ function TableRacuni(props){
     const expandRow = {
         renderer: (row) => (
             <div>
-                <button className="btn btn-success m-3" onClick={modalTansactionViewOpen}>Vidi transakcije</button>
+                <button className="btn btn-success m-3" onClick={modalTansactionViewOpen} onMouseUp={setSifraRacuna(row.IdRacuna)}>Vidi transakcije</button>
                 <button className="btn btn-success m-3" onClick={modalTansactionNewOpen} onMouseUp={setSifraRacuna(row.IdRacuna)}>Nova transakcija</button>
                 <button className="btn btn-danger m-3" onClick={()=>handleClickDeleteAccount(row.IdRacuna)}>Obriši račun</button>
             </div>
