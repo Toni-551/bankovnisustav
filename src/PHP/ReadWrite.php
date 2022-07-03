@@ -211,12 +211,15 @@ switch($_POST['RequestId']){
         $sNewSifra = $sValue['oldSifra'];
         if(!$sNewSifra)$sNewSifra='10000000000';
         $sNewSifra +=1;
+        echo $sQuery;
 
         $sQuery="INSERT INTO transakcije (Sifra, Sifra_racun, Sifra_bankar, Vrsta, Datum, Opis, Poziv_na_broj, Ime_platitelja , Iznos, Trenutno_Stanje) VALUES  ('".$sNewSifra."', '".$_POST['SifraRacuna']."', '".$_POST['SifraBankara']."', '".$_POST['Vrsta']."', '".date("d/m/Y")."', '".$_POST['Opis']."', '".$_POST['PozivNaBroj']."', '".$_POST['ImePlatitelja']."', '".$_POST['Iznos']."', '".$_POST['TrenutnoStanje']."' )";
         $oStatement = $oConnection->query($sQuery);
+        echo $sQuery;
         
         $sQuery="UPDATE racuni SET Stanje='".$_POST['TrenutnoStanje']."' WHERE idRacuni='".$_POST['SifraRacuna']."'";
         $oStatement = $oConnection->query($sQuery);
+        echo $sQuery;
         break;
     }case 'Provjera_racuna':{
         $RacunPostoji=0;

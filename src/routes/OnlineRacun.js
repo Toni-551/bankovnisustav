@@ -153,7 +153,7 @@ function OnlineRacun(){
                 PozivNaBroj: inputs.PozivNaBroj,
                 ImePlatitelja:inputs.ImePlatitelja,
                 Iznos: -inputs.Iznos,
-                TrenutnoStanje: racun.Stanje-inputs.Iznos
+                TrenutnoStanje: parseFloat(racun.Stanje)-parseFloat(inputs.Iznos)
             },
             headers: { 
                 "Content-Type": "multipart/form-data",
@@ -178,7 +178,7 @@ function OnlineRacun(){
                 PozivNaBroj: inputs.PozivNaBroj,
                 ImePlatitelja:inputs.ImePlatitelja,
                 Iznos: inputs.Iznos,
-                TrenutnoStanje: racun.Stanje+inputs.Iznos
+                TrenutnoStanje: parseFloat(racun.Stanje)+parseFloat(inputs.Iznos)
             },
             headers: { 
                 "Content-Type": "multipart/form-data",

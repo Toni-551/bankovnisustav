@@ -165,11 +165,10 @@ function Klijent(){
 
             <Modal show={onlineBankarstvo} onHide={modalonlineBankarstvoClose}> 
             <Modal.Header closeButton>
-              <Modal.Title>Nova Transakcija</Modal.Title>
+              <Modal.Title>Prijava za online bankarstvo</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <form>
-                <label className="mb-3">Šifra računa: </label><br />
                 <label>Username:</label>
                 <input
                 className="form-control mb-3"
@@ -329,6 +328,14 @@ function TableRacuni(props){
         if(!window.confirm("Želite li izvršiti transakciju?")){
             return;
         }
+        var Iznos= inputs.Vrsta=="Uplata"?inputs.Iznos:-inputs.Iznos;
+        var stanje=0;
+        tableData.forEach(function(row){
+            if(row.IdRacuna==sifraRacuna){
+                stanje=row.Stanje;
+                
+            }
+        });
         axios({
             method: 'post',
             url: 'http://localhost/KV/bankovnisustav/src/PHP/ReadWrite.php',
@@ -337,17 +344,18 @@ function TableRacuni(props){
                 SifraRacuna: sifraRacuna,
                 SifraBankara: sifraBankara,
                 Vrsta:inputs.Vrsta,
-                Opis: inputs.Opis,
-                PozivNaBroj: inputs.PozivNaBroj,
+                Opis: inputs.Opis || "",
+                PozivNaBroj: inputs.PozivNaBroj || "",
                 ImePlatitelja:inputs.ImePlatitelja,
-                Iznos: inputs.Vrsta=="Uplata"?inputs.Iznos:-inputs.Iznos
+                Iznos: Iznos,
+                TrenutnoStanje: parseFloat(stanje)+parseFloat(Iznos)
             },
             headers: { 
                 "Content-Type": "multipart/form-data",
             } ,
         }).then(function (response) {
             //handle success
-            console.log(response);
+            console.log(response.data);
             setNewTransakcija(false);
             setTableData([]);
             UcitajRacune();
