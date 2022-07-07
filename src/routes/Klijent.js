@@ -132,7 +132,7 @@ function Klijent(){
     }
     if(data){
     return(
-        <div className="container text-center mt-5 col-sm-12 col-md-8">
+        <div className="container text-center mt-3 py-5 col-sm-12 col-md-8">
             <h1 className="display-4">{data.Ime +" "+ data.Prezime}</h1>
             <p className="lead">{data.OIB}</p>
             <hr></hr>
@@ -205,7 +205,7 @@ function TableRacuni(props){
     const [transactionData, setTransactionData]= useState(null);
     const [tableData, setTableData]= useState(null);
     const [sifraRacuna, setSifraRacuna]= useState(null);
-    const [inputs, setInputs] = useState({"Vrsta":"Uplata"});
+    const [inputs, setInputs] = useState({});
     const sifraBankara = localStorage.getItem('Sifra');
     const header = [
         { text: 'Šifra', dataField: 'IdRacuna', sort: true },
@@ -227,6 +227,15 @@ function TableRacuni(props){
         UcitajRacune();
         
     },[]);
+
+    useEffect(() => {
+        if(inputs.Vrsta=="Isplata"){
+            $("#imeplatitelja").attr("readonly",true);
+            setInputs(values => ({...values, "ImePlatitelja": "Osobno"}));
+        }else{
+            $("#imeplatitelja").removeAttr("readonly",false);
+        }
+    },[inputs.Vrsta]);
 
     async function UcitajRacune(){
         axios({
@@ -255,7 +264,7 @@ function TableRacuni(props){
         $('#noviRacun').attr("disabled");
     }
     const modalTansactionNewOpen = (event) => {
-        setInputs({"Vrsta": "Uplata"});
+        setInputs({"Vrsta":"Uplata", "Iznos":0, "ImePlatitelja":"Osobno"});
         setNewTransakcija(true);
     }
     const modalTansactionNewClose = (event) => {
@@ -311,11 +320,15 @@ function TableRacuni(props){
           },
           showExpandColumn: true*/
     };
-
+    
+        
+    
     const handleChange = (event) => {
         const name = event.target.name;
         const value = event.target.value;
         setInputs(values => ({...values, [name]: value}));
+        console.log(inputs.Vrsta);
+        
     }
     function ClickIzvrsiTransakciju (){
         if(sifraRacuna.length==0 || sifraBankara.length==0){alert("Greška u programu sa šiframa"); return;}
@@ -330,6 +343,7 @@ function TableRacuni(props){
         }
         var Iznos= inputs.Vrsta=="Uplata"?inputs.Iznos:-inputs.Iznos;
         var stanje=0;
+        var ImePlatitelja=inputs.Vrsta=="Uplata"?inputs.ImePlatitelja:"Osobno";
         tableData.forEach(function(row){
             if(row.IdRacuna==sifraRacuna){
                 stanje=row.Stanje;
@@ -346,7 +360,7 @@ function TableRacuni(props){
                 Vrsta:inputs.Vrsta,
                 Opis: inputs.Opis || "",
                 PozivNaBroj: inputs.PozivNaBroj || "",
-                ImePlatitelja:inputs.ImePlatitelja,
+                ImePlatitelja:inputs.ImePlatitelja || "",
                 Iznos: Iznos,
                 TrenutnoStanje: parseFloat(stanje)+parseFloat(Iznos)
             },
@@ -394,8 +408,9 @@ function TableRacuni(props){
                 <input
                 className="form-control mb-3"
                 type="text"
+                id="imeplatitelja"
                 name="ImePlatitelja"
-                value={inputs.ImePlatitelja || ""}
+                value={inputs.ImePlatitelja}
                 onChange={handleChange}
                 />
                 <label>Vrsta:</label>
@@ -409,7 +424,7 @@ function TableRacuni(props){
                 type="number"
                 id="tableData"
                 name="Iznos"
-                value={inputs.Iznos||""}
+                value={inputs.Iznos}
                 onChange={handleChange}
                 required
                 />

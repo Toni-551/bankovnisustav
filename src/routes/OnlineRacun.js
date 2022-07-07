@@ -9,7 +9,6 @@ import $ from 'jquery';
 
 function Transakcije(){
     const [data, setData] = useState(null);
-    const [racun, setRacun]=useState();
     const { IdRacun } = useParams();
 
     useEffect(() => {
@@ -151,7 +150,7 @@ function OnlineRacun(){
                 Vrsta:"Isplata",
                 Opis: inputs.Opis,
                 PozivNaBroj: inputs.PozivNaBroj,
-                ImePlatitelja:inputs.ImePlatitelja,
+                ImePlatitelja:racun.oKlijent.Ime+" "+racun.oKlijent.Prezime,
                 Iznos: -inputs.Iznos,
                 TrenutnoStanje: parseFloat(racun.Stanje)-parseFloat(inputs.Iznos)
             },
@@ -233,8 +232,8 @@ function OnlineRacun(){
                     className="form-control mb-3"
                     type="text"
                     name="ImePlatitelja"
-                    value={inputs.ImePlatitelja || ""}
-                    onChange={handleChange}
+                    value={racun.oKlijent.Ime+" "+racun.oKlijent.Prezime}
+                    readOnly
                     />
                     <div>
                         <label>Iznos:</label>
