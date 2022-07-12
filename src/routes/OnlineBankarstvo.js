@@ -40,14 +40,14 @@ function OnlineBankarstvo(){
         var i = 0;
         function LoadNav(){
             return(
-            data.map((x)=>(<li id="x.IdRacuna" className="nav-item">
+            data.map((x)=>(<li id={x.IdRacuna} className="nav-item">
                         <Link className='btn text-white' to={"/OnlineBankarstvo/racun/"+x.IdRacuna}><button className='btn text-white'  >Racni {i=i+1}</button></Link>
                     </li>) )
                     );
         }
         return(
             <>
-            <nav className='navbar navbar-expand-md justify-content-between'>
+            <nav className='navbar navbar-expand-md justify-content-between bg-primary'>
                 <ul className="navbar-nav">
                     <LoadNav />
                 </ul>

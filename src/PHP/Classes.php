@@ -24,11 +24,10 @@ class Transakcija{
     public $Vrsta = "";
     public $Datum = "";
     public $Opis = "";
-    public $PozivNaBroj = "";
     public $Platitelj = "";
     public $Iznos = "";
     public $TrenutnoStanje = "";
-    public function __construct($sifra="", $sifra_racun="", $bankar="", $vrsta="", $datum="", $opis="", $poziv_na_broj="",$platitelja="" , $iznos="", $trenutno_stanje="")
+    public function __construct($sifra="", $sifra_racun="", $bankar="", $vrsta="", $datum="", $opis="",$platitelja="" , $iznos="", $trenutno_stanje="")
     {
         $this->Sifra = $sifra;
         $this->SifraRacuna = $sifra_racun;
@@ -36,7 +35,6 @@ class Transakcija{
         $this->Vrsta = $vrsta;
         $this->Datum = $datum;
         $this->Opis = $opis;
-        $this->PozivNaBroj = $poziv_na_broj;
         $this->Platitelj = $platitelja;
         $this->Iznos = $iznos;
         $this->TrenutnoStanje=$trenutno_stanje;

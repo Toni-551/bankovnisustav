@@ -42,7 +42,7 @@ function AzurirajKlijenta(){
         event.preventDefault();
         var validation = true;
         var reg = /^\d+$/;
-        if(!($('#telefon').val().length == 10 && reg.test($('#telefon').val()))){
+        if(!($('#telefon').val().length == 10 && reg.test($('#telefon').val()) || $('#telefon').val().length==0)){
             $('#telefon').attr('class','form-control is-invalid');
             validation=false; 
         }else{

@@ -78,7 +78,6 @@ function Klijent(){
     }
     const handleClickNoviRacun = (event) => {
         if(!window.confirm("Želite li dodati novi račun?")){
-
             return;
         }
         
@@ -221,7 +220,6 @@ function TableRacuni(props){
         { text: 'Trenutno stanje', dataField: 'TrenutnoStanje', sort: true },
         { text: 'Platitelj', dataField: 'Platitelj', sort: true },
         { text: 'Opis', dataField: 'Opis', sort: true },
-        { text: 'Poziv na broj', dataField: 'PozivNaBroj', sort: true },
       ];
     useEffect(() => {
         UcitajRacune();
@@ -321,8 +319,6 @@ function TableRacuni(props){
           showExpandColumn: true*/
     };
     
-        
-    
     const handleChange = (event) => {
         const name = event.target.name;
         const value = event.target.value;
@@ -347,7 +343,6 @@ function TableRacuni(props){
         tableData.forEach(function(row){
             if(row.IdRacuna==sifraRacuna){
                 stanje=row.Stanje;
-                
             }
         });
         axios({
@@ -359,7 +354,6 @@ function TableRacuni(props){
                 SifraBankara: sifraBankara,
                 Vrsta:inputs.Vrsta,
                 Opis: inputs.Opis || "",
-                PozivNaBroj: inputs.PozivNaBroj || "",
                 ImePlatitelja:inputs.ImePlatitelja || "",
                 Iznos: Iznos,
                 TrenutnoStanje: parseFloat(stanje)+parseFloat(Iznos)
@@ -403,7 +397,8 @@ function TableRacuni(props){
             </Modal.Header>
             <Modal.Body>
                 <form>
-                <label className="mb-3">Šifra računa: </label><br />
+                <label className="mb-3">Šifra računa: {sifraRacuna}</label><br />
+                <label className="mb-3">Trenutno stanje: {tableData.find(element=>element.IdRacuna==sifraRacuna).Stanje}</label><br />
                 <label>Ime platitelja:</label>
                 <input
                 className="form-control mb-3"
@@ -431,14 +426,6 @@ function TableRacuni(props){
                 <div className="invalid-feedback mb-3">
                     Nemoguća isplata više novaca nego što ima na računu
                 </div>
-                <label>Poziv na broj:</label>
-                <input
-                className="form-control mb-3 col"
-                type="text"
-                name="PozivNaBroj"
-                value={inputs.PozivNaBroj||""}
-                onChange={handleChange}
-                />
                 <label>Opis:</label>
                 <input
                 className="form-control mb-3"

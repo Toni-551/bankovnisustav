@@ -40,7 +40,7 @@ function Transakcije(){
     
     return(
         data.map((x)=>
-        (<div className={`card border border-${x.Iznos<0?"danger":"success"} m-3`}
+        (<div id={x.Sifra} className={`card border border-${x.Iznos<0?"danger":"success"} m-3`}
         >
         <div className="card-header">{x.Datum}</div>
         <div className="card-body row">
@@ -86,23 +86,21 @@ function OnlineRacun(){
     if(!racun) return;
 
     const modalTansactionNewOpen = (event) => {
-        setInputs({"Vrsta": "Uplata", "Iznos":0});
+        setInputs({"Vrsta":"Uplata", "Iznos":0});
         setNewTransakcija(true);
     }
     const modalTansactionNewClose = (event) => {
         setNewTransakcija(false);
     }
-    function ProvjeraTransakcije(){
-        
-        var valid=true;
-        
-        if(parseFloat(inputs.Iznos)<0 || parseFloat(inputs.Iznos)>parseFloat(racun.Stanje)){
-            valid=false;
+    async function ProvjeraTransakcije(){
+        var valid=1;
+        if(parseFloat(inputs.Iznos)<=0 || parseFloat(inputs.Iznos)>parseFloat(racun.Stanje)){
+            valid=0;
             $('#Iznos').attr('class','form-control is-invalid');
         }else{
             $('#Iznos').attr('class','form-control is-valid');
         }
-       /* axios({
+        await axios({
             method: 'post',
             url: 'http://localhost/KV/bankovnisustav/src/PHP/ReadWrite.php',
             data: {
@@ -121,20 +119,14 @@ function OnlineRacun(){
             }else{
                 $('#racun').attr('class','form-control is-valid');
             }
-            setState(response.data);
         }).catch(function (response) {
             //handle error
             console.log(response);
         });
-        if(!state)return;
-            console.log(valid);*/
-            return valid;
-        
-        
-        
+        return parseFloat(valid);
     }
-    function ClickIzvrsiTransakciju (){
-        if(ProvjeraTransakcije()==0){
+    async function ClickIzvrsiTransakciju (){
+        if(await ProvjeraTransakcije()==0){
             return;
         }
         if(!window.confirm("Želite li izvršiti transakciju?")){
@@ -149,7 +141,6 @@ function OnlineRacun(){
                 SifraBankara: "online",
                 Vrsta:"Isplata",
                 Opis: inputs.Opis,
-                PozivNaBroj: inputs.PozivNaBroj,
                 ImePlatitelja:racun.oKlijent.Ime+" "+racun.oKlijent.Prezime,
                 Iznos: -inputs.Iznos,
                 TrenutnoStanje: parseFloat(racun.Stanje)-parseFloat(inputs.Iznos)
@@ -174,7 +165,6 @@ function OnlineRacun(){
                 SifraBankara: "online",
                 Vrsta:"Uplata",
                 Opis: inputs.Opis,
-                PozivNaBroj: inputs.PozivNaBroj,
                 ImePlatitelja:inputs.ImePlatitelja,
                 Iznos: inputs.Iznos,
                 TrenutnoStanje: parseFloat(racun.Stanje)+parseFloat(inputs.Iznos)
@@ -213,6 +203,7 @@ function OnlineRacun(){
                 <Modal.Body>
                     <form>
                     <label className="mb-3">Šifra računa:{IdRacun} </label><br />
+                    <label className="mb-3">Trenutno stanje: {racun.Stanje}</label><br />
                     <div>
                         <label>Prebaci na račun:</label>
                         <input
@@ -242,25 +233,12 @@ function OnlineRacun(){
                         type="number"
                         id="Iznos"
                         name="Iznos"
-                        value={inputs.Iznos||0}
+                        value={inputs.Iznos}
                         onChange={handleChange}
                         />
                         <div className="invalid-feedback mb-3">
-                        Nemože se uplatit više nego što ima na računu novaca
-                        </div>
-                    </div>
-                    <div>
-                        <label>Poziv na broj:</label>
-                        <input
-                        className="form-control mb-3 col"
-                        type="text"
-                        id="PozivNaBroj"
-                        name="PozivNaBroj"
-                        value={inputs.PozivNaBroj||""}
-                        onChange={handleChange}
-                        />
-                         <div className="invalid-feedback mb-3">
-                        Poziv na broj može biti ili prazan ili 12 znamenki
+                        Nemoguče je  uplatiti više nego što ima na računu novaca.
+                        Nemoguče je uplatiti 0 kn
                         </div>
                     </div>
                     <div>

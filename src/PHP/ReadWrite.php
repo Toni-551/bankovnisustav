@@ -16,8 +16,7 @@ switch($_POST['RequestId']){
         }
         echo json_encode($oKlijenti , JSON_UNESCAPED_UNICODE);
         break;
-    }
-    case 'Ucitaj_podatke_zaposlenici':{
+    }case 'Ucitaj_podatke_zaposlenici':{
         $sQuery="SELECT * FROM zaposlenici;"; 
         $oStatement = $oConnection->query($sQuery);
         $oZaposlenici = array();
@@ -67,16 +66,18 @@ switch($_POST['RequestId']){
         $sQuery="SELECT MAX(Sifra)as oldSifra FROM klijenti";
         $sValue = $oConnection->query($sQuery)->fetch(PDO::FETCH_ASSOC);
         $sNewSifra= $sValue['oldSifra'];
-        if(!$sNewSifra)$sNewSifra='10000000000';
+        if(!$sNewSifra)$sNewSifra='23061335563';
         $sNewSifra +=1;
         $sQuery="INSERT INTO klijenti(Sifra, OIB, Ime, Prezime, Adresa, Telefon, Spol) VALUES('".$sNewSifra."','".$_POST['OIB']."', '".$_POST['Ime']."', '".$_POST['Prezime']."', '".$_POST['Adresa']."', '".$_POST['Telefon']."', '".$_POST['Spol']."'); "; 
         $oStatement = $oConnection->query($sQuery);
         //racun:
-        $sQuery="SELECT MAX(idRacuni)as oldSifra FROM racuni";
+        $sQuery="SELECT idRacuni FROM racuni";
         $sValue = $oConnection->query($sQuery)->fetch(PDO::FETCH_ASSOC);
-        $sRacunSifra= $sValue['oldSifra'];
-        if(!$sRacunSifra)$sRacunSifra='10000000000';
-        $sRacunSifra +=1;
+        $lIdRacuna= $sValue;
+        do{
+        $sRacunSifra=rand(1000000000, 9999999999);
+        }while(in_array($sRacunSifra, $lIdRacuna));
+        $sRacunSifra="HR256872103".$sRacunSifra;
         $sQuery="INSERT INTO racuni (idRacuni, Sifra_klijenta, Stanje, Datum_otvaranja) VALUES ('".$sRacunSifra."', '".$sNewSifra."', '".$_POST['Iznos']."', '".date("d/m/Y")."');";
         $oStatement = $oConnection->query($sQuery);
         break;
@@ -122,7 +123,7 @@ switch($_POST['RequestId']){
             if($ostatement){
                 $bankar = new Zaposlenik($ostatement->Sifra, $ostatement->OIB, $ostatement->Ime, $ostatement->Prezime, $ostatement->Adresa, $ostatement->Telefon, $ostatement->Spol);
             }
-            $oTransakcija = new Transakcija($aRow['Sifra'], $aRow['Sifra_racun'], $bankar, $aRow['Vrsta'], $aRow['Datum'], $aRow['Opis'], $aRow['Poziv_na_broj'], $aRow['Ime_platitelja'],$aRow['Iznos'], $aRow['Trenutno_Stanje']);
+            $oTransakcija = new Transakcija($aRow['Sifra'], $aRow['Sifra_racun'], $bankar, $aRow['Vrsta'], $aRow['Datum'], $aRow['Opis'], $aRow['Ime_platitelja'],$aRow['Iznos'], $aRow['Trenutno_Stanje']);
             array_push($oTransakcije, $oTransakcija);
         }
         $sQuery="SELECT * FROM racuni WHERE idRacuni='".$_POST['Sifra']."'";
@@ -152,7 +153,7 @@ switch($_POST['RequestId']){
                 if($ostatement){
                     $bankar = new Zaposlenik($ostatement->Sifra, $ostatement->OIB, $ostatement->Ime, $ostatement->Prezime, $ostatement->Adresa, $ostatement->Telefon, $ostatement->Spol);
                 }
-                $oTransakcija = new Transakcija($aRow['Sifra'], $aRow['Sifra_racun'], $bankar, $aRow['Vrsta'], $aRow['Datum'], $aRow['Opis'], $aRow['Poziv_na_broj'], $aRow['Ime_platitelja'],$aRow['Iznos'], $aRow['Trenutno_Stanje']);
+                $oTransakcija = new Transakcija($aRow['Sifra'], $aRow['Sifra_racun'], $bankar, $aRow['Vrsta'], $aRow['Datum'], $aRow['Opis'], $aRow['Ime_platitelja'],$aRow['Iznos'], $aRow['Trenutno_Stanje']);
                 array_push($oTransakcije, $oTransakcija);
             }
             $squery="SELECT * FROM klijenti WHERE Sifra='".$oRow['Sifra_klijenta']."'"; 
@@ -180,7 +181,7 @@ switch($_POST['RequestId']){
                 if($ostatement){
                     $bankar = new Zaposlenik($ostatement->Sifra, $ostatement->OIB, $ostatement->Ime, $ostatement->Prezime, $ostatement->Adresa, $ostatement->Telefon, $ostatement->Spol);
                 }
-                $oTransakcija = new Transakcija($aRow['Sifra'], $aRow['Sifra_racun'], $bankar, $aRow['Vrsta'], $aRow['Datum'], $aRow['Opis'], $aRow['Poziv_na_broj'], $aRow['Ime_platitelja'],$aRow['Iznos'],  $aRow['Trenutno_Stanje']);
+                $oTransakcija = new Transakcija($aRow['Sifra'], $aRow['Sifra_racun'], $bankar, $aRow['Vrsta'], $aRow['Datum'], $aRow['Opis'], $aRow['Ime_platitelja'],$aRow['Iznos'],  $aRow['Trenutno_Stanje']);
                 array_push($oTransakcije, $oTransakcija);
             }
             $squery="SELECT * FROM klijenti WHERE Sifra='".$_POST['Sifra']."'"; 
@@ -192,12 +193,15 @@ switch($_POST['RequestId']){
         echo json_encode($oRacuni, JSON_UNESCAPED_UNICODE);
         break;
     }case 'Dodaj_racun':{
-        $sQuery="SELECT MAX(idRacuni)as oldSifra FROM racuni";
+        $sQuery="SELECT idRacuni FROM racuni";
         $sValue = $oConnection->query($sQuery)->fetch(PDO::FETCH_ASSOC);
-        $sNewSifra= $sValue['oldSifra'];
-        if(!$sNewSifra)$sNewSifra='10000000000';
-        $sNewSifra +=1;
+        $lIdRacuna= $sValue;
+        do{
+        $sNewSifra=rand(1000000000, 9999999999);
+        }while(in_array($sNewSifra, $lIdRacuna));
+        $sNewSifra="HR256872103".$sNewSifra;
         $sQuery="INSERT INTO racuni (idRacuni, Sifra_klijenta, Stanje, Datum_otvaranja) VALUES ('".$sNewSifra."', '".$_POST['Sifra']."', '".$_POST['Value']."', '".date("d/m/Y")."');";
+        echo $sQuery;
         $oStatement = $oConnection->query($sQuery);
         break;
     }case 'Obrisi_racun':{
@@ -209,11 +213,11 @@ switch($_POST['RequestId']){
         $sQuery="SELECT MAX(Sifra)as oldSifra FROM transakcije";
         $sValue = $oConnection->query($sQuery)->fetch(PDO::FETCH_ASSOC);
         $sNewSifra = $sValue['oldSifra'];
-        if(!$sNewSifra)$sNewSifra='10000000000';
+        if(!$sNewSifra)$sNewSifra='56261551469';
         $sNewSifra +=1;
         echo $sQuery;
 
-        $sQuery="INSERT INTO transakcije (Sifra, Sifra_racun, Sifra_bankar, Vrsta, Datum, Opis, Poziv_na_broj, Ime_platitelja , Iznos, Trenutno_Stanje) VALUES  ('".$sNewSifra."', '".$_POST['SifraRacuna']."', '".$_POST['SifraBankara']."', '".$_POST['Vrsta']."', '".date("d/m/Y")."', '".$_POST['Opis']."', '".$_POST['PozivNaBroj']."', '".$_POST['ImePlatitelja']."', '".$_POST['Iznos']."', '".$_POST['TrenutnoStanje']."' )";
+        $sQuery="INSERT INTO transakcije (Sifra, Sifra_racun, Sifra_bankar, Vrsta, Datum, Opis, Ime_platitelja , Iznos, Trenutno_Stanje) VALUES  ('".$sNewSifra."', '".$_POST['SifraRacuna']."', '".$_POST['SifraBankara']."', '".$_POST['Vrsta']."', '".date("d/m/Y")."', '".$_POST['Opis']."', '".$_POST['ImePlatitelja']."', '".$_POST['Iznos']."', '".$_POST['TrenutnoStanje']."' )";
         $oStatement = $oConnection->query($sQuery);
         echo $sQuery;
         
@@ -240,8 +244,7 @@ switch($_POST['RequestId']){
         $sQuery="INSERT INTO podatci_za_prijavu_klijenti (Sifra, Korisnicko_ime, Lozinka) VALUES ('".$_POST['sifra']."', '".$_POST['username']."', '".$_POST['password']."')";
         $oStatement = $oConnection->query($sQuery);
         break;
-    }
-    default:
+    }default:
         break;
 }
 

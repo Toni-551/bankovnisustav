@@ -54,7 +54,7 @@ function Login(){
     return(
     <div className="col-lg-6 mx-auto mt-5">
     <div className="card">
-        <div className="card-header">Prijava</div>
+        <div className="card-header bg-primary text-white pt-3"><h5>Prijava u Pin bankarstvo</h5></div>
         <div className="card-body px-4 py-5 px-md-5">
             <form>
                 
