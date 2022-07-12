@@ -47,7 +47,7 @@ function OnlineBankarstvo(){
         }
         return(
             <>
-            <nav className='navbar navbar-expand-md justify-content-between bg-primary'>
+            <nav className='navbar navbar-expand-md justify-content-between'>
                 <ul className="navbar-nav">
                     <LoadNav />
                 </ul>

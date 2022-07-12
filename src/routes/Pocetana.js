@@ -4,7 +4,6 @@ import React from "react";
 import axios from 'axios';
 
 function Pocetna(){
-    const [data, setData] = useState(null);
     const sifraKlijenta = localStorage.getItem('Sifra');
     const navigation = useNavigate();
 

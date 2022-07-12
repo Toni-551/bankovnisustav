@@ -8,17 +8,30 @@ body {
   background-color: lightgray !important;
 }
 .container{
-  background-color: white !important;
+  border-radius: 3px;
 }
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
-
+.btn{
+  border-radius: 3px;
+  color: white  !important;
+}
 .table {
   table-layout: auto !important;
+  text-align: center;
+  }
+  thead{
+    background-color: rgb(18, 0, 35);
+    color: white;
+    border-color: rgb(25, 2, 47) !important;
   }
 .wrapper{
     overflow: auto;
 }
+#pageDropDown{
+  display: none;
+}
+
 

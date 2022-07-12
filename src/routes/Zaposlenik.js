@@ -54,7 +54,7 @@ function Zaposlenik(){
 
     if(data){
     return(
-        <div className="container text-center mt-5 col-sm-12 col-md-8">
+        <div className="container text-center mt-1 p-5 col-sm-12 col-md-8 bg-white">
             <h1 className="display-4">{data.Ime +" "+ data.Prezime}</h1>
             <p className="lead">{data.OIB}</p>
             <p className="lead">{data.Sifra}</p>

@@ -73,7 +73,7 @@ function NoviKlijent(){
         setInputs(values => ({...values, [name]: value}))
     }
     return (
-        <div className='container mt-5'>
+        <div className='container mt-1 p-5 bg-white'>
         <form className='needs-validation' noValidate>
             <div>
             <label>Unesite OIB:</label>

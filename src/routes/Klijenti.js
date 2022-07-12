@@ -51,7 +51,7 @@ function Klijenti(){
   if(data){
     return(
       <>
-        <div className="container my-5 col-sm-12 col-md-8">
+        <div className="container mt-1 p-5 col-sm-12 col-md-8 bg-white">
             <ToolkitProvider
                 keyField="OIB"
                 data={ data }
@@ -59,12 +59,10 @@ function Klijenti(){
                 search> 
                 {
                   props => (
-                <div>
+                <div className="container wrapper">
                   <SearchBar { ...props.searchProps } srText="Pretraživanje tablice" />
                   <Link to={'/administracija/novaOsoba/klijent'}><button className="btn btn-success m-3">Novi Klijent</button></Link>
-                  <div className="container wrapper">
-                    <BootstrapTable { ...props.baseProps } striped hover pagination={ paginationFactory() } rowEvents={ rowEvents } />
-                  </div>
+                  <BootstrapTable { ...props.baseProps } striped hover pagination={ paginationFactory() } rowEvents={ rowEvents } />
                 </div>
                   )
                 }   

@@ -53,7 +53,7 @@ function Zaposlenici(){
 
         if(data){
         return(
-            <div className="container mt-5 col-sm-12 col-md-8">
+            <div className="container mt-1 p-5 col-sm-12 col-md-8 bg-white">
                 <ToolkitProvider
                     keyField="id"
                     data={ data }
@@ -61,7 +61,7 @@ function Zaposlenici(){
                     search>
                     {
                       props => (
-                    <div>
+                    <div className="wrapper container">
                         <SearchBar { ...props.searchProps } srText="Pretraživanje tablice" />
                         <Link to={'/administracija/novaOsoba/zaposlenik'}><button className="btn btn-success m-3">Novi Zaposlenik</button></Link>
                         <BootstrapTable { ...props.baseProps } striped hover pagination={ paginationFactory() }  rowEvents={ rowEvents } />

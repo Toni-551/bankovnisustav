@@ -81,7 +81,7 @@ function AzurirajKlijenta(){
     }
     
     return (
-        <div className='container mt-5'>
+        <div className='container mt-1 p-5 bg-white'>
         <form className='needs-validation' noValidate>
             <div>
             <label>Unesite OIB:</label>

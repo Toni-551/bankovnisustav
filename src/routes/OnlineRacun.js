@@ -199,7 +199,7 @@ function OnlineRacun(){
         setInputs(values => ({...values, [name]: value}));
     }
     return(
-        <div className="container text-center mt-5 col-xl-6 col-md-8 col-xs-12">
+        <div className="container text-center mt-1 p-5 col-xl-8 col-md-8 col-xs-12 bg-white">
             <h4 id="idRacuna"className="display-4">Računa: {racun.IdRacuna}</h4>
             <h5 className="lead">Saldo: {racun.Stanje}</h5>
             <button className="btn btn-success m-3" onClick={modalTansactionNewOpen}>Nova transakcija</button>

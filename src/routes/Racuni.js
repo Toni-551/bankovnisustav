@@ -134,7 +134,7 @@ function Racuni(){
     }
     return(
         <>
-        <div className="container my-5 col-sm-12 col-md-8">
+        <div className="container mt-1 p-5 col-sm-12 col-md-8 bg-white">
             <ToolkitProvider
                 keyField="IdRacuna"
                 data={ tableData }
@@ -142,9 +142,9 @@ function Racuni(){
                 search> 
                 {
                   props => (
-                <div>
+                <div className="container wrapper">
                     <SearchBar { ...props.searchProps } srText="Pretraživanje tablice" />
-                    <div className="text-center">
+                    <div className="text-center mt-3">
                       <BootstrapTable { ...props.baseProps } striped hover pagination={ paginationFactory()} expandRow={expandRow} />
                     </div>
                  </div>
