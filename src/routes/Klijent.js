@@ -7,7 +7,6 @@ import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import $ from 'jquery';
 
-
 function Klijent(){
 
     const [show, setShow] = useState(false);
@@ -15,6 +14,7 @@ function Klijent(){
     const [data, setData] = useState(null);
     const [username, setUsername] = useState(null);
     const [password, setPassword] = useState(null);
+    const [vrstaRacuna, setVrstaRacuna]=useState("Tekuči");
     const [onlineBankarstvo, setonlineBankarstvo]= useState(false);
     const { KlijentID } = useParams();
     const navigate = useNavigate();
@@ -87,7 +87,8 @@ function Klijent(){
             data: {
                 RequestId: 'Dodaj_racun',
                 Value: value,
-                Sifra: data.Sifra
+                Sifra: data.Sifra,
+                Vrsta:vrstaRacuna
             },
             headers: { 
                 "Content-Type": "multipart/form-data",
@@ -131,7 +132,7 @@ function Klijent(){
     }
     if(data){
     return(
-        <div className="container text-center mt-1 p-5 col-sm-12 col-md-8 bg-white">
+        <div className="container text-center mt-1 p-5 col-sm-12 col-md-9 bg-white">
             <h1 className="display-4">{data.Ime +" "+ data.Prezime}</h1>
             <p className="lead">{data.OIB}</p>
             <hr></hr>
@@ -154,6 +155,11 @@ function Klijent(){
                     value={value}
                     onChange={(e) => setValue(e.target.value)}
                     />
+                    <label>Vrsta računa:</label>
+                    <select name="Vrsta" className="form-control" onChange={(e)=>setVrstaRacuna(e.target.value)}>
+                        <option value="Tekuči">Tekuči račun</option>
+                        <option value="Žiro">Žiro račun</option>
+                    </select><br />
                 </Modal.Body>
 
                 <Modal.Footer>
@@ -209,6 +215,7 @@ function TableRacuni(props){
     const header = [
         { text: 'Šifra', dataField: 'IdRacuna', sort: true },
         { text: 'Stanje', dataField: 'Stanje', sort: true },
+        { text: 'Vrsta', dataField: 'VrstaRacuna', sort: true },
         { text: 'Datum otvaranja', dataField: 'DatumOtvaranja', sort: true },
       ];
     const headerTransakcije = [
@@ -397,8 +404,8 @@ function TableRacuni(props){
             </Modal.Header>
             <Modal.Body>
                 <form>
-                <label className="mb-3">Šifra računa: {sifraRacuna}</label><br />
-                <label className="mb-3">Trenutno stanje: {tableData.find(element=>element.IdRacuna==sifraRacuna).Stanje}</label><br />
+                <label className="mb-3">Račun: {sifraRacuna}</label><br />
+                <label className="mb-3">Trenutno stanje: {sifraRacuna?tableData.find(element=>element.IdRacuna==sifraRacuna).Stanje:""} HRK</label><br />
                 <label>Ime platitelja:</label>
                 <input
                 className="form-control mb-3"

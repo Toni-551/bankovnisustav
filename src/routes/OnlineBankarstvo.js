@@ -41,7 +41,7 @@ function OnlineBankarstvo(){
         function LoadNav(){
             return(
             data.map((x)=>(<li id={x.IdRacuna} className="nav-item">
-                        <Link className='btn text-white' to={"/OnlineBankarstvo/racun/"+x.IdRacuna}><button className='btn text-white'  >Racni {i=i+1}</button></Link>
+                        <Link className='btn text-white' to={"/OnlineBankarstvo/racun/"+x.IdRacuna}>{x.VrstaRacuna}</Link>
                     </li>) )
                     );
         }

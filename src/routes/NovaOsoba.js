@@ -6,7 +6,7 @@ import $ from 'jquery';
 
 function NoviKlijent(){
 
-    const [inputs, setInputs] = useState({});
+    const [inputs, setInputs] = useState({"Vrsta":"Tekuči"});
     const navigate = useNavigate();
     const { IdOsoba } = useParams();
 
@@ -52,7 +52,7 @@ function NoviKlijent(){
                 Adresa: inputs.Adresa,
                 Telefon: inputs.Telefon,
                 Spol: inputs.Spol,
-                Iznos: klijent?inputs.RacunIznos:"",
+                Vrsta: klijent?inputs.Vrsta:"",
             },
             headers: { 
                 "Content-Type": "multipart/form-data",
@@ -140,14 +140,12 @@ function NoviKlijent(){
             onChange={handleChange}
             />
             {klijent?<div>
-            <label>Unesite početni iznos računa:</label>
-            <input
-            className="form-control mb-3"
-            type="text"
-            name="RacunIznos"
-            value={inputs.RacunIznos || ""}
-            onChange={handleChange}
-            /></div>:""
+                <label>Vrsta računa:</label>
+                    <select name="Vrsta" className="form-control" onChange={handleChange}>
+                        <option value="Tekuči">Tekuči račun</option>
+                        <option value="Žiro">Žiro račun</option>
+                    </select><br />
+            </div>:""
             }
             <button className='btn btn-success' onClick={handleSubmit}>Dodaj novog klijenta</button>
         </form>

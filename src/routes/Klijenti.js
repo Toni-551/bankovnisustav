@@ -51,9 +51,9 @@ function Klijenti(){
   if(data){
     return(
       <>
-        <div className="container mt-1 p-5 col-sm-12 col-md-8 bg-white">
+        <div className="container mt-1 p-5 col-sm-12 col-md-9 bg-white">
             <ToolkitProvider
-                keyField="OIB"
+                keyField="Sifra"
                 data={ data }
                 columns={ header }
                 search> 

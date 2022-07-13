@@ -6,7 +6,6 @@ import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import $ from 'jquery';
 
-
 function Transakcije(){
     const [data, setData] = useState(null);
     const { IdRacun } = useParams();
@@ -40,7 +39,7 @@ function Transakcije(){
     
     return(
         data.map((x)=>
-        (<div id={x.Sifra} className={`card border border-${x.Iznos<0?"danger":"success"} m-3`}
+        (<div id={x.Sifra} className={`text-center card border border-${x.Iznos<0?"danger":"success"} m-3`}
         >
         <div className="card-header">{x.Datum}</div>
         <div className="card-body row">
@@ -189,79 +188,90 @@ function OnlineRacun(){
         setInputs(values => ({...values, [name]: value}));
     }
     return(
-        <div className="container text-center mt-1 p-5 col-xl-8 col-md-8 col-xs-12 bg-white">
-            <h4 id="idRacuna"className="display-4">Računa: {racun.IdRacuna}</h4>
-            <h5 className="lead">Saldo: {racun.Stanje}</h5>
-            <button className="btn btn-success m-3" onClick={modalTansactionNewOpen}>Nova transakcija</button>
-            <hr></hr>
-            <Transakcije />
-
-            <Modal show={newTransakcija} onHide={modalTansactionNewClose}> 
-                <Modal.Header closeButton>
-                  <Modal.Title>Nova Transakcija</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <form>
-                    <label className="mb-3">Šifra računa:{IdRacun} </label><br />
-                    <label className="mb-3">Trenutno stanje: {racun.Stanje}</label><br />
-                    <div>
-                        <label>Prebaci na račun:</label>
-                        <input
-                        className="form-control mb-3"
-                        type="text"
-                        id="racun"
-                        name="racunZaPrebacit"
-                        value={inputs.racunZaPrebacit || ""}
-                        onChange={handleChange}
-                        />
-                        <div className="invalid-feedback mb-3">
-                        Uneseni račun nepostoji
-                        </div>
-                    </div>
-                    <label>Ime platitelja:</label>
+        <div className="container mt-1 p-5 col-xl-8 col-md-8 col-xs-12 bg-white">
+            <div className="bg-primary text-white container pb-4">
+                <div className="pt-5 px-5">
+                    <h4 className="display-5">{racun.VrstaRacuna} račun</h4>
+                    <h4 className="display-5">{racun.IdRacuna}</h4>
+                    <h5 className="display-6">{racun.Stanje} HRK</h5>
+                </div>
+                <nav className='navbar navbar-expand-md justify-content-center bg-success mt-5'>
+                    <ul className="navbar-nav">
+                        <li>
+                        <button className="btn" onClick={modalTansactionNewOpen}>Nova transakcija</button>
+                        <button className="btn" onClick={modalTansactionNewOpen}>Info</button>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        <hr></hr>
+        <Transakcije />
+        <Modal show={newTransakcija} onHide={modalTansactionNewClose}> 
+            <Modal.Header closeButton>
+              <Modal.Title>Nova Transakcija</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                <form>
+                <label className="mb-3">Račun: {IdRacun} </label><br />
+                <label className="mb-3">Trenutno stanje: {racun.Stanje} HRK</label><br />
+                <div>
+                    <label>Prebaci na račun:</label>
                     <input
                     className="form-control mb-3"
                     type="text"
-                    name="ImePlatitelja"
-                    value={racun.oKlijent.Ime+" "+racun.oKlijent.Prezime}
-                    readOnly
+                    id="racun"
+                    name="racunZaPrebacit"
+                    value={inputs.racunZaPrebacit || ""}
+                    onChange={handleChange}
                     />
-                    <div>
-                        <label>Iznos:</label>
-                        <input
-                        className="form-control mb-3"
-                        type="number"
-                        id="Iznos"
-                        name="Iznos"
-                        value={inputs.Iznos}
-                        onChange={handleChange}
-                        />
-                        <div className="invalid-feedback mb-3">
-                        Nemoguče je  uplatiti više nego što ima na računu novaca.
-                        Nemoguče je uplatiti 0 kn
-                        </div>
+                    <div className="invalid-feedback mb-3">
+                    Uneseni račun nepostoji
                     </div>
-                    <div>
-                        <label>Opis:</label>
-                        <input
-                        className="form-control mb-3"
-                        type="text"
-                        id="Opis"
-                        name="Opis"
-                        value={inputs.Opis||""}
-                        onChange={handleChange}
-                        /> 
-                        <div className="invalid-feedback mb-3">
-                        Opis nemože biti duži od 50 znakova
-                        </div>
+                </div>
+                <label>Ime platitelja:</label>
+                <input
+                className="form-control mb-3"
+                type="text"
+                name="ImePlatitelja"
+                value={racun.oKlijent.Ime+" "+racun.oKlijent.Prezime}
+                readOnly
+                />
+                <div>
+                    <label>Iznos:</label>
+                    <input
+                    className="form-control mb-3"
+                    type="number"
+                    id="Iznos"
+                    name="Iznos"
+                    value={inputs.Iznos}
+                    onChange={handleChange}
+                    />
+                    <div className="invalid-feedback mb-3">
+                    Nemoguče je  uplatiti više nego što ima na računu novaca.
+                    Nemoguče je uplatiti 0 kn
                     </div>
-                    </form>
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={modalTansactionNewClose}>Close</Button>
-                    <Button variant="primary" onClick={()=>ClickIzvrsiTransakciju()}>Izvrši transakciju</Button>
-                </Modal.Footer>
-            </Modal >
+                </div>
+                <div>
+                    <label>Opis:</label>
+                    <input
+                    className="form-control mb-3"
+                    type="text"
+                    id="Opis"
+                    name="Opis"
+                    value={inputs.Opis||""}
+                    onChange={handleChange}
+                    /> 
+                    <div className="invalid-feedback mb-3">
+                    Opis nemože biti duži od 50 znakova
+                    </div>
+                </div>
+                </form>
+            </Modal.Body>
+            <Modal.Footer>
+                <Button variant="secondary" onClick={modalTansactionNewClose}>Close</Button>
+                <Button variant="primary" onClick={()=>ClickIzvrsiTransakciju()}>Izvrši transakciju</Button>
+            </Modal.Footer>
+        </Modal >
         </div>
     );
 }

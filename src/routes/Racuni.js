@@ -22,11 +22,12 @@ function Racuni(){
       { text: 'Ime klijenta', dataField: 'oKlijent.Ime', sort: true },
       { text: 'Prezime klijenta', dataField: 'oKlijent.Prezime', sort: true },
       { text: 'Adresa klijenta', dataField: 'oKlijent.Adresa', sort: true },
+      { text: 'Vrsta računa', dataField: 'VrstaRacuna'},
       { text: 'Saldo', dataField: 'Stanje', sort: true }
     ];
     const headerTransakcije = [
       { text: 'Šifra', dataField: 'Sifra', sort: true },
-      { text: 'šifra bankara', dataField: 'Bankar.Sifra', sort: true },
+      { text: 'Šifra bankara', dataField: 'Bankar.Sifra', sort: true },
       { text: 'Vrsta', dataField: 'Vrsta', sort: true },
       { text: 'Datum', dataField: 'Datum', sort: true },
       { text: 'Iznos', dataField: 'Iznos', sort: true },
@@ -128,7 +129,7 @@ function Racuni(){
   }
   return(
       <>
-      <div className="container mt-1 p-5 col-sm-12 col-md-8 bg-white">
+      <div className="container mt-1 p-5 col-sm-12 col-md-9 bg-white">
           <ToolkitProvider
               keyField="IdRacuna"
               data={ tableData }
@@ -162,7 +163,7 @@ function Racuni(){
         <Modal.Body>
             <form>
               <label className="mb-3">Šifra računa: {sifraRacuna}</label><br />
-              <label className="mb-3">Trenutno stanje: {tableData.find(element=>element.IdRacuna==sifraRacuna).Stanje}</label><br />
+              <label className="mb-3">Trenutno stanje: {sifraRacuna?tableData.find(element=>element.IdRacuna==sifraRacuna).Stanje:""}</label><br />
               <label>Ime platitelja:</label>
               <input
               className="form-control mb-3"

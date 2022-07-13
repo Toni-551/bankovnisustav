@@ -5,13 +5,15 @@ class Racun{
     public $SifraKlijenta="";
     public $Stanje="";
     public $DatumOtvaranja="";
+    public $VrstaRacuna="";
     public $oKlijent=null;
     public $loTransakcije=[];
-    public function __construct($idracuna, $sifraklijenta, $stanje, $datum, $klijent, $transakcije){
+    public function __construct($idracuna, $sifraklijenta, $stanje, $datum, $vrsta, $klijent, $transakcije){
         $this->IdRacuna=$idracuna;
         $this->SifraKlijenta=$sifraklijenta;
         $this->Stanje=$stanje;
         $this->DatumOtvaranja=$datum;
+        $this->VrstaRacuna=$vrsta;
         $this->oKlijent=$klijent;
         $this->loTransakcije=$transakcije;
     }

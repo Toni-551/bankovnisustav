@@ -78,7 +78,7 @@ switch($_POST['RequestId']){
         $sRacunSifra=rand(1000000000, 9999999999);
         }while(in_array($sRacunSifra, $lIdRacuna));
         $sRacunSifra="HR256872103".$sRacunSifra;
-        $sQuery="INSERT INTO racuni (idRacuni, Sifra_klijenta, Stanje, Datum_otvaranja) VALUES ('".$sRacunSifra."', '".$sNewSifra."', '".$_POST['Iznos']."', '".date("d/m/Y")."');";
+        $sQuery="INSERT INTO racuni (idRacuni, Sifra_klijenta, Stanje, Datum_otvaranja, Vrsta_racuna) VALUES ('".$sRacunSifra."', '".$sNewSifra."', '0', '".date("d/m/Y")."', '".$_POST['Vrsta']."');";
         $oStatement = $oConnection->query($sQuery);
         break;
     }case 'Obrisi_klijenta':{
@@ -133,7 +133,7 @@ switch($_POST['RequestId']){
         $ostatement = $oConnection->query($squery)->fetchObject();
         $klijent = new Klijent($ostatement->Sifra, $ostatement->OIB, $ostatement->Ime, $ostatement->Prezime, $ostatement->Adresa, $ostatement->Telefon, $ostatement->Spol);
 
-        $oRacun = new Racun($aStatement->idRacuni, $aStatement->Sifra_klijenta, $aStatement->Stanje, $aStatement->Datum_otvaranja, $klijent, $oTransakcije);
+        $oRacun = new Racun($aStatement->idRacuni, $aStatement->Sifra_klijenta, $aStatement->Stanje, $aStatement->Datum_otvaranja, $aStatement->Vrsta_racuna, $klijent, $oTransakcije);
         echo json_encode($oRacun, JSON_UNESCAPED_UNICODE);
         break;
     }case 'Ucitaj_racune':{
@@ -159,7 +159,7 @@ switch($_POST['RequestId']){
             $squery="SELECT * FROM klijenti WHERE Sifra='".$oRow['Sifra_klijenta']."'"; 
             $ostatement = $oConnection->query($squery)->fetchObject();
             $klijent = new Klijent($ostatement->Sifra, $ostatement->OIB, $ostatement->Ime, $ostatement->Prezime, $ostatement->Adresa, $ostatement->Telefon, $ostatement->Spol);
-            $oRacun = new Racun($oRow['idRacuni'], $oRow['Sifra_klijenta'], $oRow['Stanje'], $oRow['Datum_otvaranja'], $klijent, $oTransakcije);
+            $oRacun = new Racun($oRow['idRacuni'], $oRow['Sifra_klijenta'], $oRow['Stanje'], $oRow['Datum_otvaranja'], $oRow['Vrsta_racuna'], $klijent, $oTransakcije);
             array_push($oRacuni, $oRacun);
         }
         echo json_encode($oRacuni, JSON_UNESCAPED_UNICODE);
@@ -187,7 +187,7 @@ switch($_POST['RequestId']){
             $squery="SELECT * FROM klijenti WHERE Sifra='".$_POST['Sifra']."'"; 
             $ostatement = $oConnection->query($squery)->fetchObject();
             $klijent = new Klijent($ostatement->Sifra, $ostatement->OIB, $ostatement->Ime, $ostatement->Prezime, $ostatement->Adresa, $ostatement->Telefon, $ostatement->Spol);
-            $oRacun = new Racun($oRow['idRacuni'], $oRow['Sifra_klijenta'], $oRow['Stanje'], $oRow['Datum_otvaranja'], $klijent, $oTransakcije);
+            $oRacun = new Racun($oRow['idRacuni'], $oRow['Sifra_klijenta'], $oRow['Stanje'], $oRow['Datum_otvaranja'], $oRow['Vrsta_racuna'], $klijent, $oTransakcije);
             array_push($oRacuni, $oRacun);
         }
         echo json_encode($oRacuni, JSON_UNESCAPED_UNICODE);
@@ -200,7 +200,7 @@ switch($_POST['RequestId']){
         $sNewSifra=rand(1000000000, 9999999999);
         }while(in_array($sNewSifra, $lIdRacuna));
         $sNewSifra="HR256872103".$sNewSifra;
-        $sQuery="INSERT INTO racuni (idRacuni, Sifra_klijenta, Stanje, Datum_otvaranja) VALUES ('".$sNewSifra."', '".$_POST['Sifra']."', '".$_POST['Value']."', '".date("d/m/Y")."');";
+        $sQuery="INSERT INTO racuni (idRacuni, Sifra_klijenta, Stanje, Datum_otvaranja, Vrsta_racuna) VALUES ('".$sNewSifra."', '".$_POST['Sifra']."', '".$_POST['Value']."', '".date("d/m/Y")."', '".$_POST['Vrsta']."');";
         echo $sQuery;
         $oStatement = $oConnection->query($sQuery);
         break;
