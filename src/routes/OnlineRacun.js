@@ -8,6 +8,7 @@ import $ from 'jquery';
 
 function Transakcije(){
     const [data, setData] = useState(null);
+    const [filter, setFilter]= useState("none");
     const { IdRacun } = useParams();
 
     useEffect(() => {
@@ -36,10 +37,33 @@ function Transakcije(){
           });
     }
     if(!data) return;
-    
-    return(
-        data.map((x)=>
-        (<div id={x.Sifra} className={`text-center card border border-${x.Iznos<0?"danger":"success"} m-3`}
+    const handleChange=(event)=>{
+        setFilter(event.target.value)
+        setData([]);
+
+        UcitajRacune();
+    }
+    var output;
+    if(filter=="none"){
+        output =data.map((x)=>
+                (<div id={x.Sifra} className={`text-center card border border-${x.Iznos<0?"danger":"success"} m-3`}
+                >
+                <div className="card-header">{x.Datum}</div>
+                <div className="card-body row">
+                    <div className="col-xs-12 col-md-2">
+                        <h5 className={`text-${x.Iznos<0?"danger":"success"}`}>{x.Iznos} </h5>
+                        <h6>{x.TrenutnoStanje}</h6>
+                    </div>
+                    <div className="card-text col">
+                    {x.Platitelj+" "+ x.Vrsta+" "+ x.Opis+ "("+ x.Sifra+")"} 
+                    </div>
+                </div>
+                </div>)
+            )
+    }
+    else if(filter=="uplate"){
+        output= data.filter(x=>x.Iznos>0);
+        output= output.map(x=>(<div id={x.Sifra} className={`text-center card border border-${x.Iznos<0?"danger":"success"} m-3`}
         >
         <div className="card-header">{x.Datum}</div>
         <div className="card-body row">
@@ -51,10 +75,39 @@ function Transakcije(){
             {x.Platitelj+" "+ x.Vrsta+" "+ x.Opis+ "("+ x.Sifra+")"} 
             </div>
         </div>
-        </div>)));
+        </div>));
+    }
+    else if(filter=="isplate"){
+        output= data.filter(x=>x.Iznos<0);
+        output= output.map(x=>(<div id={x.Sifra} className={`text-center card border border-${x.Iznos<0?"danger":"success"} m-3`}
+        >
+        <div className="card-header">{x.Datum}</div>
+        <div className="card-body row">
+            <div className="col-xs-12 col-md-2">
+                <h5 className={`text-${x.Iznos<0?"danger":"success"}`}>{x.Iznos} </h5>
+                <h6>{x.TrenutnoStanje}</h6>
+            </div>
+            <div className="card-text col">
+            {x.Platitelj+" "+ x.Vrsta+" "+ x.Opis+ "("+ x.Sifra+")"} 
+            </div>
+        </div>
+        </div>));
+    }
+    
+    return(<div>
+        <label>Vrsta računa:</label>
+        <select name="filter" className="form-control" onChange={handleChange}>
+            <option value="none">Sve Transakcije</option>
+            <option value="uplate">Uplate</option>
+            <option value="isplate">Isplate</option>
+        </select><br />
+        {output}
+    </div>
+    );
 }
 function OnlineRacun(){
     const [newTransakcija, setNewTransakcija]= useState(false);
+    const [showDetalji, setShowDetalji]= useState(false);
     const [inputs, setInputs] = useState({"Vrsta":"Uplata", "Iznos":0});
     const [racun, setRacun]= useState(null);
     const { IdRacun } = useParams();
@@ -91,6 +144,12 @@ function OnlineRacun(){
     const modalTansactionNewClose = (event) => {
         setNewTransakcija(false);
     }
+    const modalshowDetaljiOpen = (event) => {
+        setShowDetalji(true);
+    }
+    const modalshowDetaljiClose = (event) => {
+        setShowDetalji(false);
+    }
     async function ProvjeraTransakcije(){
         var valid=1;
         if(parseFloat(inputs.Iznos)<=0 || parseFloat(inputs.Iznos)>parseFloat(racun.Stanje)){
@@ -104,7 +163,8 @@ function OnlineRacun(){
             url: 'http://localhost/KV/bankovnisustav/src/PHP/ReadWrite.php',
             data: {
                 RequestId: 'Provjera_racuna',
-                Sifra: inputs.racunZaPrebacit||""
+                Sifra: inputs.racunZaPrebacit||"",
+                Racun: racun.IdRacuna
             },
             headers: { 
                 "Content-Type": "multipart/form-data",
@@ -139,8 +199,8 @@ function OnlineRacun(){
                 SifraRacuna: IdRacun,
                 SifraBankara: "online",
                 Vrsta:"Isplata",
-                Opis: inputs.Opis,
-                ImePlatitelja:racun.oKlijent.Ime+" "+racun.oKlijent.Prezime,
+                Opis: inputs.Opis || "",
+                ImePlatitelja:"Osobno",
                 Iznos: -inputs.Iznos,
                 TrenutnoStanje: parseFloat(racun.Stanje)-parseFloat(inputs.Iznos)
             },
@@ -163,8 +223,8 @@ function OnlineRacun(){
                 SifraRacuna: inputs.racunZaPrebacit,
                 SifraBankara: "online",
                 Vrsta:"Uplata",
-                Opis: inputs.Opis,
-                ImePlatitelja:inputs.ImePlatitelja,
+                Opis: inputs.Opis || "",
+                ImePlatitelja:racun.oKlijent.Ime+" "+racun.oKlijent.Prezime,
                 Iznos: inputs.Iznos,
                 TrenutnoStanje: parseFloat(racun.Stanje)+parseFloat(inputs.Iznos)
             },
@@ -198,14 +258,32 @@ function OnlineRacun(){
                 <nav className='navbar navbar-expand-md justify-content-center bg-success mt-5'>
                     <ul className="navbar-nav">
                         <li>
-                        <button className="btn" onClick={modalTansactionNewOpen}>Nova transakcija</button>
-                        <button className="btn" onClick={modalTansactionNewOpen}>Info</button>
+                            <button className="btn" onClick={modalTansactionNewOpen}>Nova transakcija</button>
+                        </li>
+                        <li>
+                            <button className="btn" onClick={modalshowDetaljiOpen}>Info</button>
                         </li>
                     </ul>
                 </nav>
             </div>
         <hr></hr>
         <Transakcije />
+
+        <Modal show={showDetalji} onHide={modalshowDetaljiClose}> 
+            <Modal.Header closeButton>
+              <Modal.Title>Detalji</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                <h6>Naziv računa: {racun.VrstaRacuna}</h6><br/>
+                <h6>IBAN: {racun.IdRacuna}</h6><br/>
+                <h6>vlasnik: {racun.oKlijent.Ime+" "+racun.oKlijent.Prezime} </h6><br/>
+                <h6>Raspoloživo sredstvo: {racun.Stanje} HRK</h6><br/>
+            </Modal.Body>
+            <Modal.Footer>
+                <Button variant="secondary" onClick={modalshowDetaljiClose}>Zatvori</Button>
+            </Modal.Footer>
+        </Modal >
+
         <Modal show={newTransakcija} onHide={modalTansactionNewClose}> 
             <Modal.Header closeButton>
               <Modal.Title>Nova Transakcija</Modal.Title>
@@ -268,7 +346,7 @@ function OnlineRacun(){
                 </form>
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={modalTansactionNewClose}>Close</Button>
+                <Button variant="secondary" onClick={modalTansactionNewClose}>Zatvori</Button>
                 <Button variant="primary" onClick={()=>ClickIzvrsiTransakciju()}>Izvrši transakciju</Button>
             </Modal.Footer>
         </Modal >

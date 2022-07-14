@@ -12,14 +12,16 @@ function Klijent(){
     const [show, setShow] = useState(false);
     const [value, setValue]= useState(0);
     const [data, setData] = useState(null);
-    const [username, setUsername] = useState(null);
     const [password, setPassword] = useState(null);
     const [vrstaRacuna, setVrstaRacuna]=useState("Tekuči");
     const [onlineBankarstvo, setonlineBankarstvo]= useState(false);
+    const [tableData, setTableData]= useState(null);
+    const [prop, setProp]= useState("false");
     const { KlijentID } = useParams();
     const navigate = useNavigate();
 
     useEffect(() => {
+        
         axios({
             method: 'post',
             url: 'http://localhost/KV/bankovnisustav/src/PHP/ReadWrite.php',
@@ -38,10 +40,36 @@ function Klijent(){
             //handle error
             console.log(response);
           });
-        }, []);
+          UcitajRacune();
+    }, []);
 
+    async function UcitajRacune(){
+        axios({
+            method: 'post',
+            url: 'http://localhost/KV/bankovnisustav/src/PHP/ReadWrite.php',
+            data: {
+                RequestId: 'Ucitaj_racune_klijenta',
+                Sifra: KlijentID
+            },
+            headers: { 
+                "Content-Type": "multipart/form-data",
+            } ,
+        }).then(function (response) {
+            //handle success
+            console.log(response.data);
+            setTableData(response.data);
+          }).catch(function (response) {
+            //handle error
+            console.log(response);
+          });
+    }
     const modalOpen = (event) => {
         setShow(true);
+        if(tableData.length==1){
+            tableData[0].VrstaRacuna=="Žiro"?setVrstaRacuna("Tekuči"):setVrstaRacuna("Žiro");
+            setProp("true");
+            console.log(vrstaRacuna);
+        }
     }
     const modalClose = (event) => {
         setShow(false);
@@ -88,7 +116,7 @@ function Klijent(){
                 RequestId: 'Dodaj_racun',
                 Value: value,
                 Sifra: data.Sifra,
-                Vrsta:vrstaRacuna
+                Vrsta: vrstaRacuna
             },
             headers: { 
                 "Content-Type": "multipart/form-data",
@@ -104,16 +132,22 @@ function Klijent(){
     }
 
     const handleClickOnlineBankarstvo=(event)=>{
-        if(!window.confirm("Želite li napraviti online bankarstvo?")){
+        if($("#lozinka").val().length<6){
+            $("#lozinka").attr('class', "form-control is-invalid");
+            return;
+        }else{
+            $("#lozinka").attr('class', "form-control is-valid");
+        }
+        if(!window.confirm("Želite li promijeniti lozinku za online bankarstvo?")){
             return;
         }
+        console.log(password+"dafdafaddffdafaddaf");
         axios({
             method: 'post',
             url: 'http://localhost/KV/bankovnisustav/src/PHP/ReadWrite.php',
             data: {
-                RequestId: 'Dodaj_podatke_za_prijevu_klijent',
+                RequestId: 'Nova_lozinka_za_prijevu_klijent',
                 sifra: KlijentID,
-                username: username,
                 password: password
             },
             headers: { 
@@ -122,13 +156,12 @@ function Klijent(){
         }).then(function (response) {
           //handle success
           console.log(response.data);
-          alert("Uspiješno napravljeno online bankarstvo");
           setonlineBankarstvo(false);
+          alert("Lozinka uspiješno promijenjena");
         }).catch(function (response) {
           //handle error
           console.log(response);
         });
-
     }
     if(data){
     return(
@@ -145,7 +178,6 @@ function Klijent(){
                 <Modal.Header closeButton>
                   <Modal.Title>Novi Račun</Modal.Title>
                 </Modal.Header>
-
                 <Modal.Body>
                     <label>Početna Uplata:</label>
                     <input
@@ -156,45 +188,41 @@ function Klijent(){
                     onChange={(e) => setValue(e.target.value)}
                     />
                     <label>Vrsta računa:</label>
-                    <select name="Vrsta" className="form-control" onChange={(e)=>setVrstaRacuna(e.target.value)}>
+                    <select name="Vrsta" id="Vrsta" disabled={prop} value={vrstaRacuna} className="form-control" onChange={(e)=>setVrstaRacuna(e.target.value)}>
                         <option value="Tekuči">Tekuči račun</option>
                         <option value="Žiro">Žiro račun</option>
                     </select><br />
                 </Modal.Body>
-
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={modalClose}>Close</Button>
+                    <Button variant="secondary" onClick={modalClose}>Zatvori</Button>
                     <Button variant="primary" onClick={handleClickNoviRacun}>Napravi račun</Button>
                 </Modal.Footer>
             </Modal >
 
             <Modal show={onlineBankarstvo} onHide={modalonlineBankarstvoClose}> 
             <Modal.Header closeButton>
-              <Modal.Title>Prijava za online bankarstvo</Modal.Title>
+              <Modal.Title>Promjena lozinke za online bankarstvo</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <form>
-                <label>Username:</label>
-                <input
-                className="form-control mb-3"
-                type="text"
-                name="Username"
-                value={username || ""}
-                onChange={(e)=>setUsername(e.target.value)}
-                />
-                <label>Password:</label>
+                <label>Unesite novu lozinku:</label>
                 <input
                 className="form-control mb-3"
                 type="password"
                 name="Password"
+                id="lozinka"
                 value={password || ""}
                 onChange={(e)=>setPassword(e.target.value)}
+                required
                 />
+                <div className="invalid-feedback mb-3">
+                    Lozinka mora imat 6 znakova
+                </div>
                 </form>
             </Modal.Body>
             <Modal.Footer>
-                    <Button variant="secondary" onClick={modalonlineBankarstvoClose}>Close</Button>
-                    <Button variant="primary" onClick={handleClickOnlineBankarstvo}>Napravi račun</Button>
+                    <Button variant="secondary" onClick={modalonlineBankarstvoClose}>Zatvori</Button>
+                    <Button variant="primary" onClick={handleClickOnlineBankarstvo}>Promijeni</Button>
                 </Modal.Footer>
             </Modal >
         </div>
@@ -218,9 +246,9 @@ function TableRacuni(props){
         { text: 'Vrsta', dataField: 'VrstaRacuna', sort: true },
         { text: 'Datum otvaranja', dataField: 'DatumOtvaranja', sort: true },
       ];
-    const headerTransakcije = [
+      const headerTransakcije = [
         { text: 'Šifra', dataField: 'Sifra', sort: true },
-        { text: 'šifra bankara', dataField: 'Bankar.Sifra', sort: true },
+        { text: 'Bankar', dataField:'Bankar.Sifra', sort: true },
         { text: 'Vrsta', dataField: 'Vrsta', sort: true },
         { text: 'Datum', dataField: 'Datum', sort: true },
         { text: 'Iznos', dataField: 'Iznos', sort: true },
@@ -264,9 +292,8 @@ function TableRacuni(props){
     }
     if(!tableData)return;
     if(tableData.length==0)return;
-
-    if(tableData.length>=3){
-        $('#noviRacun').attr("disabled");
+    if(tableData.length>=2){
+        $('#noviRacun').attr("disabled", "");
     }
     const modalTansactionNewOpen = (event) => {
         setInputs({"Vrsta":"Uplata", "Iznos":0, "ImePlatitelja":"Osobno"});
@@ -380,6 +407,7 @@ function TableRacuni(props){
             console.log(response);
         }); 
     }
+    
      
     return(
         <div className="container my-5">
@@ -444,7 +472,7 @@ function TableRacuni(props){
                 </form>
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={modalTansactionNewClose}>Close</Button>
+                <Button variant="secondary" onClick={modalTansactionNewClose}>Zatvori</Button>
                 <Button variant="primary" onClick={()=>ClickIzvrsiTransakciju()}>Izvrši transakciju</Button>
             </Modal.Footer>
             </Modal >

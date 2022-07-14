@@ -19,7 +19,6 @@ function Klijenti(){
       { text: 'Prezime', dataField: 'Prezime', sort: true },
       { text: 'Adresa', dataField: 'Adresa', sort: true },
       { text: 'Telefon', dataField: 'Telefon', sort: true },
-      { text: 'Spol', dataField: 'Spol' },
     ];
     
 
@@ -52,6 +51,7 @@ function Klijenti(){
     return(
       <>
         <div className="container mt-1 p-5 col-sm-12 col-md-9 bg-white">
+          <h3 className="display-5 mb-5">Svi Klijenti</h3>
             <ToolkitProvider
                 keyField="Sifra"
                 data={ data }
@@ -75,108 +75,3 @@ function Klijenti(){
 }
 
 export default Klijenti;
-
-
-/*const body = Array.from(new Array(57), () => {
-        const rd = (Math.random() * 10).toFixed(1);
-      
-        if (rd > 0.5) {
-          return {
-            username: 'i-am-billy',
-            realname: `Billy ${rd}`,
-            location: 'Mars'
-          };
-        }
-      
-        return {
-          username: 'john-nhoj',
-          realname: `John ${rd}`,
-          location: 'Saturn'
-        };
-      });
-      /*const header = [
-        { dataField: 'username', text: 'username', sort: true},
-        { dataField: 'realname', text: 'realname', sort: true },
-        { dataField: 'location', text: 'location' }
-      ];*/
-
-/*
-function Data(){
-
-    const [data, setData] = useState(null);
-    
-    useEffect(() => {
-    axios({
-        method: 'post',
-        url: 'http://localhost/KV/bankovnisustav/src/PHP/ReadWrite.php',
-        data: {
-            RequestId: 'Ucitaj_podatke_klijenti',
-        },
-        headers: { 
-            "Content-Type": "multipart/form-data",
-        } ,
-    }).then(function (response) {
-        //handle success
-        console.log(response.data);
-        setData(response.data);
-      }).catch(function (response) {
-        //handle error
-        console.log(response);
-      });
-    }, []);
-
-    if(data){
-    var result = data.map((x)=>
-        <tr>
-            <td>{x.OIB}</td>
-            <td>{x.Ime}</td>
-            <td>{x.Prezime}</td>
-            <td>{x.Adresa}</td>
-            <td>{x.Telefon}</td>
-            <td>{x.Spol}</td>
-        </tr>
-    );
-    console.log(result);
-    return(result);
-    }else{
-        return(
-            <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
-        );
-    }
-}
-
-function Klijent(){
-    return(
-        <div className='container'>
-            <table className='table table-striped'>
-                <thead>
-                  <tr>
-                    <th>Oib</th>
-                    <th>Ime</th>
-                    <th>Prezime</th>
-                    <th>Adresa</th>
-                    <th>Telefon</th>
-                    <th>Spol</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <Data />
-                </tbody>
-            </table>
-        </div>
-
-    );
-}
-export default Klijent;
-
-/*
-
-
-*/

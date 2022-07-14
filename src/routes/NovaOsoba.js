@@ -25,6 +25,38 @@ function NoviKlijent(){
         event.preventDefault();
         var validation = true;
         var reg = /^\d+$/;
+
+        if($('#Ime').val().length==0){
+            $('#Ime').attr('class','form-control is-invalid');
+            validation=false; 
+        }else{
+            $('#Ime').attr('class','form-control is-valid');
+        }
+        if($('#Prezime').val().length==0){
+            $('#Prezime').attr('class','form-control is-invalid');
+            validation=false; 
+        }else{
+            $('#Prezime').attr('class','form-control is-valid');
+        }
+        if($('#Adresa').val().length==0){
+            $('#Adresa').attr('class','form-control is-invalid');
+            validation=false; 
+        }else{
+            $('#Adresa').attr('class','form-control is-valid');
+        }
+
+        if($('#Lozinka').val().length==0){
+            $('#Lozinka').attr('class','form-control is-invalid');
+            validation=false; 
+        }else{
+            $('#Lozinka').attr('class','form-control is-valid');
+        }
+        if($('#KorisnickoIme').val().length==0){
+            $('#KorisnickoIme').attr('class','form-control is-invalid');
+            validation=false; 
+        }else{
+            $('#KorisnickoIme').attr('class','form-control is-valid');
+        }
         if(!($('#telefon').val().length == 10 && reg.test($('#telefon').val()))){
             $('#telefon').attr('class','form-control is-invalid');
             validation=false; 
@@ -38,6 +70,37 @@ function NoviKlijent(){
             $('#oib').attr('class','form-control is-valid');
         }
         if(!validation)return;
+        UpisuBazu();
+        
+    }
+    async function UpisuBazu(){
+        var exist;
+        await axios({
+            method: 'post',
+            url: 'http://localhost/KV/bankovnisustav/src/PHP/ReadWrite.php',
+            data: {
+                RequestId: 'Provjeri_korisnicko_ime',
+                username:$('#KorisnickoIme').val(),
+            },
+            headers: { 
+                "Content-Type": "multipart/form-data",
+            } ,
+        }).then(function (response) {
+            //handle success
+            console.log(response.data);
+            //setCheck(response.data);
+            exist=response.data;
+            
+        }).catch(function (response) {
+            //handle error
+            console.log(response);
+        });
+        if(exist){
+            $('#KorisnickoIme').attr('class','form-control is-invalid');
+            return;
+        }else{
+            $('#KorisnickoIme').attr('class','form-control is-valid');
+        }
         if(!window.confirm("Želite li dodati novu osobu?")){
             return;
         }
@@ -51,23 +114,22 @@ function NoviKlijent(){
                 Prezime: inputs.Prezime,
                 Adresa: inputs.Adresa,
                 Telefon: inputs.Telefon,
-                Spol: inputs.Spol,
                 Vrsta: klijent?inputs.Vrsta:"",
+                username:inputs.KorisnickoIme,
+                password:inputs.Lozinka
             },
             headers: { 
                 "Content-Type": "multipart/form-data",
             } ,
         }).then(function (response) {
             //handle success
-            console.log(response.data);
             console.log(response);
             navigate('/administracija/'+route);
         }).catch(function (response) {
             //handle error
             console.log(response);
         });
-        
-    }
+    } 
     const handleChange = (event) => {
         const name = event.target.name;
         const value = event.target.value;
@@ -96,6 +158,7 @@ function NoviKlijent(){
             className="form-control mb-3"
             type="text"
             name="Ime"
+            id="Ime"
             value={inputs.Ime || ""}
             onChange={handleChange}
             />
@@ -103,6 +166,7 @@ function NoviKlijent(){
             <input
             className="form-control mb-3"
             type="text"
+            id="Prezime"
             name="Prezime"
             value={inputs.Prezime || ""}
             onChange={handleChange}
@@ -112,6 +176,7 @@ function NoviKlijent(){
             className="form-control mb-3"
             type="text"
             name="Adresa"
+            id="Adresa"
             value={inputs.Adresa || ""}
             onChange={handleChange}
             />
@@ -130,15 +195,6 @@ function NoviKlijent(){
                 Unesite ispravan broj mobitela(10 brojeva).
             </div>
             </div>
-            <label>Unesite Spol:</label>
-            <input
-            className="form-control mb-3"
-            type="text"
-            id="spol"
-            name="Spol"
-            value={inputs.Spol || ""}
-            onChange={handleChange}
-            />
             {klijent?<div>
                 <label>Vrsta računa:</label>
                     <select name="Vrsta" className="form-control" onChange={handleChange}>
@@ -147,6 +203,35 @@ function NoviKlijent(){
                     </select><br />
             </div>:""
             }
+            <label>Podatci za prijavu online</label>
+            <div>
+                <label>Unesite korisničko ime:</label>
+                <input
+                className="form-control mb-3"
+                type="text"
+                id="KorisnickoIme"
+                name="KorisnickoIme"
+                value={inputs.KorisnickoIme || ""}
+                onChange={handleChange}
+                />
+                <div className="invalid-feedback mb-3">
+                    Korisničko ime ili postoji ili niste unijeli
+                </div>
+            </div>
+            <div>
+                <label>Unesite lozinku:</label>
+                <input
+                className="form-control mb-3"
+                type="password"
+                id="Lozinka"
+                name="Lozinka"
+                value={inputs.Lozinka || ""}
+                onChange={handleChange}
+                />
+                <div className="invalid-feedback mb-3">
+                    Morate unijeti lozinku
+                </div>
+            </div>
             <button className='btn btn-success' onClick={handleSubmit}>Dodaj novog klijenta</button>
         </form>
         </div>);

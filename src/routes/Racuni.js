@@ -27,18 +27,25 @@ function Racuni(){
     ];
     const headerTransakcije = [
       { text: 'Šifra', dataField: 'Sifra', sort: true },
-      { text: 'Šifra bankara', dataField: 'Bankar.Sifra', sort: true },
+      { text: 'Bankar', dataField: 'Bankar.Sifra', sort: true },
       { text: 'Vrsta', dataField: 'Vrsta', sort: true },
       { text: 'Datum', dataField: 'Datum', sort: true },
       { text: 'Iznos', dataField: 'Iznos', sort: true },
       { text: 'Trenutno stanje', dataField: 'TrenutnoStanje', sort: true },
       { text: 'Platitelj', dataField: 'Platitelj', sort: true },
       { text: 'Opis', dataField: 'Opis', sort: true },
-      { text: 'Poziv na broj', dataField: 'PozivNaBroj', sort: true },
     ];
   useEffect(() => {
     UcitajRacune();
   },[]);
+  useEffect(() => {
+    if(inputs.Vrsta=="Isplata"){
+        $("#imeplatitelja").attr("readonly",true);
+        setInputs(values => ({...values, "ImePlatitelja": "Osobno"}));
+    }else{
+        $("#imeplatitelja").removeAttr("readonly",false);
+    }
+  },[inputs.Vrsta]);
   async function UcitajRacune(){
     axios({
       method: 'post',
@@ -61,7 +68,7 @@ function Racuni(){
   if(!tableData)return;
   if(tableData.length==0)return;
   const modalTansactionNewOpen = (event) => {
-    setInputs({"Vrsta": "Uplata"});
+    setInputs({"Vrsta":"Uplata", "Iznos":0, "ImePlatitelja":"Osobno"});
     setNewTransakcija(true);
   }
   const modalTansactionNewClose = (event) => {
@@ -93,12 +100,20 @@ function Racuni(){
     if(parseFloat(inputs.Iznos)<0 || parseFloat(inputs.Iznos)>parseFloat(tableData.Stanje)){
       $('#Iznos').attr('class','form-control is-invalid');
       return;
-  }else{
-      $('#Iznos').attr('class','form-control is-valid');
-  }
-    if(!window.confirm("Želite li izvršiti transakciju?")){
-      return;
-  }
+    }else{
+        $('#Iznos').attr('class','form-control is-valid');
+    }
+      if(!window.confirm("Želite li izvršiti transakciju?")){
+        return;
+    }
+    var Iznos= inputs.Vrsta=="Uplata"?inputs.Iznos:-inputs.Iznos;
+    var stanje=0;
+    var ImePlatitelja=inputs.Vrsta=="Uplata"?inputs.ImePlatitelja:"Osobno";
+    tableData.forEach(function(row){
+        if(row.IdRacuna==sifraRacuna){
+            stanje=row.Stanje;
+        }
+    });
     axios({
         method: 'post',
         url: 'http://localhost/KV/bankovnisustav/src/PHP/ReadWrite.php',
@@ -108,9 +123,10 @@ function Racuni(){
             SifraBankara: sifraBankara,
             Vrsta:inputs.Vrsta,
             Opis: inputs.Opis,
-            PozivNaBroj: inputs.PozivNaBroj,
-            ImePlatitelja:inputs.ImePlatitelja,
-            Iznos: inputs.Vrsta=="Uplata"?inputs.Iznos:-inputs.Iznos
+            PozivNaBroj: inputs.PozivNaBroj || "",
+            ImePlatitelja:inputs.ImePlatitelja || "",
+            Iznos: Iznos,
+            TrenutnoStanje: parseFloat(stanje)+parseFloat(Iznos)
         },
         headers: { 
             "Content-Type": "multipart/form-data",
@@ -130,6 +146,7 @@ function Racuni(){
   return(
       <>
       <div className="container mt-1 p-5 col-sm-12 col-md-9 bg-white">
+      <h3 className="display-5 mb-5">Svi Računi</h3>
           <ToolkitProvider
               keyField="IdRacuna"
               data={ tableData }
@@ -169,6 +186,7 @@ function Racuni(){
               className="form-control mb-3"
               type="text"
               name="ImePlatitelja"
+              id="imeplatitelja"
               value={inputs.ImePlatitelja || ""}
               onChange={handleChange}
               />
@@ -183,7 +201,7 @@ function Racuni(){
               type="number"
               name="Iznos"
               id="Iznos"
-              value={inputs.Iznos||""}
+              value={inputs.Iznos}
               onChange={handleChange}
               />
                <div className="invalid-feedback mb-3">

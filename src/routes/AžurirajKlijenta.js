@@ -58,7 +58,6 @@ function AzurirajKlijenta(){
                 Prezime: inputs.Prezime ||data.Prezime,
                 Adresa: inputs.Adresa ||data.Adresa,
                 Telefon: inputs.Telefon||data.Telefon,
-                Spol: inputs.Spol||data.Spol,
                 KlijentID: KlijentID
             },
             headers: { 
@@ -142,17 +141,7 @@ function AzurirajKlijenta(){
                 Unesite ispravan broj mobitela(10 brojeva).
             </div>
             </div>
-            <label>Unesite Spol:</label>
-            <input
-            className="form-control mb-3"
-            type="text"
-            id="spol"
-            name="Spol"
-            placeholder={data.Spol}
-            value={inputs.Spol || ""}
-            onChange={handleChange}
-            />
-            <button className='btn btn-success' onClick={handleSubmit}>Dodaj novog klijenta</button>
+            <button className='btn btn-success' onClick={handleSubmit}>Ažuriraj klijenta</button>
         </form>
         </div>);
     }
