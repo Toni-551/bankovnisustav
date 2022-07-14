@@ -52,6 +52,7 @@ function OnlineBankarstvo(){
                     <LoadNav />
                 </ul>
                 <div className="navbar-nav ml-auto">
+                    <button className="btn text-white" >{data[0].oKlijent.Ime+" "+data[0].oKlijent.Prezime}</button>
                     <Link className='btn text-white' to="/Login" onClick={handleClick} >Odjava</Link>       
                 </div>    
             </nav>

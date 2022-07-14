@@ -281,7 +281,11 @@ switch($_POST['RequestId']){
             $Iznos=0;
         }
         echo '{"count":'.$snum.', "ukupnoStanje":'.$uStanje.', "IdRacuna":"'.$sValue->idRacuni.'","Datum_Otvaranja":"'.$sValue->Datum_otvaranja.'","VrstaRacuna":"'.$sValue->Vrsta_racuna.'","IdKlijenta":'.$sValue->Sifra_klijenta.',"Stanje":'.$sValue->Stanje.',"Broj":'.$sValue->mag.',"mIdRacuna":"'.$oValue->idRacuni.'","mDatum_Otvaranja":"'.$oValue->Datum_otvaranja.'","mVrstaRacuna":"'.$oValue->Vrsta_racuna.'","mIdKlijenta":'.$oValue->Sifra_klijenta.',"mStanje":'.$oValue->Stanje.',"Iznos":'.$Iznos.'}';
-    }default:
+    }case 'Get_ime_bankara':{
+        $sQuery="SELECT Ime, Prezime FROM zaposlenici WHERE Sifra='".$_POST['sifra']."'";
+        $sValue = $oConnection->query($sQuery)->fetchObject();
+        echo '{"ime": "'.$sValue->Ime.'", "prezime":"'.$sValue->Prezime.'"}';
+    } default:
         break;
 }
 
